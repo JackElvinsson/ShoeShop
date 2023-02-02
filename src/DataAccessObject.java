@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 
 public class DataAccessObject {
 
-    public DataAccessObject() {
+    // Skapa ett nytt Repository-objekt
+    Repository repository = new Repository();
 
-        // Skapa ett nytt Repository-objekt
-        Repository repository = new Repository();
+    public DataAccessObject() {
 
         // lista med skor från databasen
         List<Shoe> shoeList = null;
@@ -131,4 +131,19 @@ public class DataAccessObject {
         return customerList.stream().map(c -> c.getFirstName() + " " + c.getLastName()).collect(Collectors.toList());
     }
 
+    public void matchShoeToBrandAndModel(List<Shoe> shoeList, List<Brand> brandList, List<Model> modelList) {
+        for (Shoe shoe : shoeList) {
+            for (Brand brand : brandList) {
+                if (shoe.getShoe_brandID() == brand.getBrandID()) {
+                    for (Model model : modelList) {
+                        if (shoe.getShoe_modelID() == model.getModelID()) {
+                            System.out.println("Shoe with ID " + shoe.getShoeID() + " has brand " + brand.getBrandName() + " and model " + model.getModelName());
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
 }
