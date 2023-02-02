@@ -74,31 +74,31 @@ public class DataAccessObject {
     public List<String> getBrands(List<Brand> brandList) {
 
         // Skapa en lista med varumärken
-        return brandList.stream().map(Brand::getBrandName).collect(Collectors.toList());
+        return brandList.stream().map(Brand::getBrandName).distinct().collect(Collectors.toList());
     }
 
     public List<String> getModels(List<Model> modelList) {
 
         // Skapa en lista med modeller
-        return modelList.stream().map(Model::getModelName).collect(Collectors.toList());
+        return modelList.stream().map(Model::getModelName).distinct().collect(Collectors.toList());
     }
 
     public List<String> getColors(List<Shoe> shoeList) {
 
         // Skapa en lista med färger
-        return shoeList.stream().map(Shoe::getShoeColor).collect(Collectors.toList());
+        return shoeList.stream().map(Shoe::getShoeColor).distinct().collect(Collectors.toList());
     }
 
     public List<Integer> getSizes(List<Shoe> shoeList) {
 
         // Skapa en lista med storlekar
-        return shoeList.stream().map(Shoe::getShoeSize).collect(Collectors.toList());
+        return shoeList.stream().map(Shoe::getShoeSize).distinct().collect(Collectors.toList());
     }
 
     public List<String> getPrices(List<Shoe> shoeList) {
 
         // Skapa en lista med priser
-        return shoeList.stream().map(Shoe::getShoePrice).collect(Collectors.toList());
+        return shoeList.stream().map(Shoe::getShoePrice).distinct().collect(Collectors.toList());
     }
 
     public List<Integer> getSales(List<Shoe> shoeList) {
@@ -116,18 +116,18 @@ public class DataAccessObject {
     public List<Integer> getShoeIDs(List<Shoe> shoeList) {
 
         // Skapa en lista med skoID
-        return shoeList.stream().map(Shoe::getShoeID).collect(Collectors.toList());
+        return shoeList.stream().map(Shoe::getShoeID).distinct().collect(Collectors.toList());
     }
 
     public List<Integer> getCustomerIDs(List<Customer> customerList) {
 
         // Skapa en lista med kundID
-        return customerList.stream().map(Customer::getCustomerID).collect(Collectors.toList());
+        return customerList.stream().map(Customer::getCustomerID).distinct().collect(Collectors.toList());
     }
 
     public List<String> getCustomerNames(List<Customer> customerList) {
 
-        // Create a list of customer names
+        // Skapa en lista med kundnamn
         return customerList.stream().map(c -> c.getFirstName() + " " + c.getLastName()).collect(Collectors.toList());
     }
 
