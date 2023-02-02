@@ -7,7 +7,9 @@ import Shoe.Model;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DataAccessObject {
 
@@ -67,6 +69,66 @@ public class DataAccessObject {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
+
+    public List<String> getBrands(List<Brand> brandList) {
+
+        // Skapa en lista med varumärken
+        return brandList.stream().map(Brand::getBrandName).collect(Collectors.toList());
+    }
+
+    public List<String> getModels(List<Model> modelList) {
+
+        // Skapa en lista med modeller
+        return modelList.stream().map(Model::getModelName).collect(Collectors.toList());
+    }
+
+    public List<String> getColors(List<Shoe> shoeList) {
+
+        // Skapa en lista med färger
+        return shoeList.stream().map(Shoe::getShoeColor).collect(Collectors.toList());
+    }
+
+    public List<Integer> getSizes(List<Shoe> shoeList) {
+
+        // Skapa en lista med storlekar
+        return shoeList.stream().map(Shoe::getShoeSize).collect(Collectors.toList());
+    }
+
+    public List<String> getPrices(List<Shoe> shoeList) {
+
+        // Skapa en lista med priser
+        return shoeList.stream().map(Shoe::getShoePrice).collect(Collectors.toList());
+    }
+
+    public List<Integer> getSales(List<Shoe> shoeList) {
+
+        // Skapa en lista med försäljning
+        return shoeList.stream().map(Shoe::getShoeSales).collect(Collectors.toList());
+    }
+
+    public List<Integer> getInventories(List<Shoe> shoeList) {
+
+        // Skapa en lista med lager
+        return shoeList.stream().map(Shoe::getInventory).collect(Collectors.toList());
+    }
+
+    public List<Integer> getShoeIDs(List<Shoe> shoeList) {
+
+        // Skapa en lista med skoID
+        return shoeList.stream().map(Shoe::getShoeID).collect(Collectors.toList());
+    }
+
+    public List<Integer> getCustomerIDs(List<Customer> customerList) {
+
+        // Skapa en lista med kundID
+        return customerList.stream().map(Customer::getCustomerID).collect(Collectors.toList());
+    }
+
+    public List<String> getCustomerNames(List<Customer> customerList) {
+
+        // Create a list of customer names
+        return customerList.stream().map(c -> c.getFirstName() + " " + c.getLastName()).collect(Collectors.toList());
+    }
+
 }
