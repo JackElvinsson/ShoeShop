@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UserLogin {
 
@@ -72,24 +73,80 @@ public class UserLogin {
                 if (shoe.getModel().getModelName().equalsIgnoreCase(userInputOfShoeModel)) {
                     matchingShoe = shoe;
                     break;
-                }}
+                }
+            }
 
             if (matchingShoe == null) {
                 System.out.println("Hittade ingen skomodell med namn " + userInputOfShoeModel);
             }
         }
+        //Ser till att matchingshoe blir sparas i en final.
 
-        System.out.println("vald sko " + matchingShoe.getBrand().getBrandName()+" "+matchingShoe.getModel().getModelName());
+        final Shoe finalMatchingShoe=matchingShoe;
 
-        System.out.println("skon finns i storlekarna: ");
+        Set<Integer> availableSizes = shoeList.stream()
+                .filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(finalMatchingShoe.getModel().getModelName()))
+                .filter(shoe -> shoe.getInventory() > 0)
+                .map(shoe -> shoe.getShoeSize())
+                .collect(Collectors.toSet());
 
-            for (int i = 0; i < DAO.getSizes(shoeList).size(); i++) {
-                System.out.print(DAO.getSizes(shoeList).get(i) + " - " + DAO.getColors(shoeList).get(i) + "\n");
-
+        System.out.println("Tillgängliga storlekar:");
+        for (Integer size : availableSizes) {
+            System.out.println(size);
         }
-        System.out.println("Välj vilken storlek du vill köpa: ");
-        int size = scanner.nextInt();
 
+        int UserInputOfShoeSize;
+        while (true) {
+            System.out.println("Vilken skostorleken du vill köpa?");
+            UserInputOfShoeSize = scanner.nextInt();
+            if (availableSizes.contains(UserInputOfShoeSize)) {
+                break;
+            }
+            System.out.println("Ogiltig storlek.");
+        }
+        final int finalShoeSize=UserInputOfShoeSize;
+        System.out.println();
+        System.out.println("Tillgängliga färger:");
+        Set<String> availableColors = shoeList.stream()
+                .filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(finalMatchingShoe.getModel().getModelName()))
+                .filter(shoe -> shoe.getInventory() > 0)
+                .filter(shoe -> shoe.getShoeSize() == finalShoeSize)
+                .map(shoe -> shoe.getShoeColor().toLowerCase())
+                .collect(Collectors.toSet());
+
+        for (String color : availableColors) {
+            System.out.println(color);
+        }
+
+        scanner.nextLine();
+        String userInputOfColor;
+        String matchingColor = null;
+
+        System.out.println();
+        while (true) {
+            System.out.println("Välj färg");
+            userInputOfColor = scanner.nextLine().toLowerCase();
+
+            if (availableColors.contains(userInputOfColor)) {
+                matchingColor = userInputOfColor;
+                break;
+            } else {
+                System.out.println();
+                System.out.println("Ogiltig färg");
+            }
+        }
+
+        final String finalShoeColor=userInputOfColor;
+
+        int finalShoeId = shoeList.stream()
+                .filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(finalMatchingShoe.getModel().getModelName()))
+                .filter(shoe -> shoe.getShoeSize() == finalShoeSize)
+                .filter(shoe -> shoe.getShoeColor().equalsIgnoreCase(finalShoeColor))
+                .findFirst()
+                .get()
+                .getShoeID();
+
+        System.out.println("Interna skoID:"+finalShoeId);
     }
 
     }
