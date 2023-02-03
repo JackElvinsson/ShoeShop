@@ -19,7 +19,10 @@ public class Repository {
         try (
                 Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT ShoeID, Inventory, Color, `Size`, Price, Sales, Shoe_Brand_ID, Shoe_Model_ID FROM shoe");) {
+                ResultSet resultSet = statement.executeQuery("SELECT shoe.ShoeID, shoe.Inventory, shoe.Color, shoe.Size, shoe.Price, shoe.Sales, brand.BrandID, brand.BrandName, model.ModelID, model.ModelName\n" +
+                        "FROM shoe\n" +
+                        "JOIN brand ON shoe.Shoe_Brand_ID = brand.BrandID\n" +
+                        "JOIN model ON shoe.Shoe_Model_ID = model.ModelID;");) {
 
             List<Shoe> shoeList = new ArrayList<>();
 
@@ -35,14 +38,16 @@ public class Repository {
                 tempShoe.setShoeColor(color);
                 int size = resultSet.getInt("Size");
                 tempShoe.setShoeSize(size);
-                String price = resultSet.getString("Price");
+                double price = resultSet.getDouble("Price");
                 tempShoe.setShoePrice(price);
                 int sales = resultSet.getInt("Sales");
                 tempShoe.setShoeSales(sales);
-                int shoe_BrandID = resultSet.getInt("Shoe_Brand_ID");
-                tempShoe.setShoe_brandID(shoe_BrandID);
-                int shoe_ModelID = resultSet.getInt("Shoe_Model_ID");
-                tempShoe.setShoe_modelID(shoe_ModelID);
+                int brandID = resultSet.getInt("BrandID");
+                String brandName = resultSet.getString("BrandName");
+                tempShoe.setBrand(new Brand(brandID, brandName));
+                int modelID = resultSet.getInt("ModelID");
+                String modelName = resultSet.getString("ModelName");
+                tempShoe.setModel(new Model(modelID, modelName));
 
                 shoeList.add(tempShoe);
 
@@ -53,6 +58,7 @@ public class Repository {
             throw new RuntimeException(e);
         }
     }
+
 
     public List<Brand> getBrandList() throws IOException {
 

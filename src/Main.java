@@ -1,12 +1,11 @@
 import Customer.Customer;
-import Order.Order;
-import Shoe.Shoe;
-import Order.OrderDetails;
 import Shoe.Brand;
 import Shoe.Model;
+import Shoe.Shoe;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -29,23 +28,32 @@ public class Main {
 
         Repository repository = new Repository();
         DataAccessObject dao = new DataAccessObject();
-
-        // Testar att hämta en lista med skor från databasen och skriva ut den i konsolen
+        List<Customer> customerList = repository.getCustomerList();
         List<Shoe> shoeList = repository.getShoeList();
-        System.out.println("ShoeID Inventory Color Size Price Sales Shoe_Brand_ID Shoe_Model_ID");
-        shoeList.forEach(shoe -> System.out.println(shoe.getShoeID()
-                + " " + shoe.getInventory() + " " + shoe.getShoeColor()
-                + " " + shoe.getShoeSize() + " " + shoe.getShoePrice()
-                + " " + shoe.getShoeSales() + " " + shoe.getShoe_brandID()
-                + " " + shoe.getShoe_modelID()));
-//
-//        // Testar att hämta en lista med kunder från databasen och skriva ut den i konsolen
+
+        UserLogin ul=new UserLogin();
+        ul.login(customerList);
+        ul.addToCart(shoeList);
+
+//         Testar att hämta en lista med skor från databasen och skriva ut den i konsolen
+//        List<Shoe> shoeList = repository.getShoeList();
+//        System.out.println("ShoeID Inventory Color Size Price Sales Shoe_Brand_ID Shoe_Model_ID");
+//        shoeList.forEach(shoe -> System.out.println(shoe.getShoeID()
+//                + " " + shoe.getInventory() + " " + shoe.getShoeColor()
+//                + " " + shoe.getShoeSize() + " " + shoe.getShoePrice()
+//                + " " + shoe.getShoeSales() + " " + shoe.getBrand().getBrandID()
+//                + " " + shoe.getModel().getModelID()));
+//        System.out.println(dao.getSizes(shoeList).get(0));
+
+//         Testar att hämta en lista med kunder från databasen och skriva ut den i konsolen
 //        List<Customer> customerList = repository.getCustomerList();
 //        System.out.println("CustomerID FirstName LastName Password Customer_locationID");
 //        customerList.forEach(customer -> System.out.println(customer.getCustomerID()
 //                + " " + customer.getFirstName() + " " + customer.getLastName()
 //                + " " + customer.getPassword() + " " + customer.getCustomer_locationID()));
 //
+//        login(customerList);
+
 //        // Testar att hämta en lista med ordrar från databasen och skriva ut den i konsolen
 //        List<Order> orderList = repository.getOrderList();
 //        System.out.println("OrderID OrderDate Order_locationID");
@@ -64,15 +72,38 @@ public class Main {
 //        brandList.forEach(brand -> System.out.println(brand.getBrandID()
 //                + " " + brand.getBrandName()));
 //
-//        // Testar att hämta en lista med modeller från databasen och skriva ut den i konsolen
+        // Testar att hämta en lista med modeller från databasen och skriva ut den i konsolen
 //        List<Model> modelList = repository.getModelList();
 //        System.out.println("ModelID ModelName");
 //        modelList.forEach(model -> System.out.println(model.getModelID()
 //                + " " + model.getModelName()));
-//
+////
 
-        System.out.println(dao.getSizes(shoeList).get(0));
+
     }
+
+
+    public static void login(List<Customer> customerList){
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter first name: ");
+        String firstName = sc.nextLine();
+        System.out.print("Enter password: ");
+        String password = sc.nextLine();
+
+        // Använder lambda för att kontrollera om användaren finns. Ignonerar case på 'firstname' aka username.
+        Customer customer = customerList.stream().filter(c -> c.getFirstName().equalsIgnoreCase(firstName) && c.getPassword().equals(password)).findFirst().orElse(null);
+
+        if (customer != null) {
+            System.out.println("Welcome, " + firstName + "!");
+            customer.setIsLoggedIn(true);
+            System.out.println(customer.getFirstName() + " Loggedin="+customer.isLoggedIn());
+            //start addtocart-method...
+        } else {
+            System.out.println("Invalid input");
+        }
+}
 
 }
 

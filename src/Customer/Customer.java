@@ -2,31 +2,48 @@ package Customer;
 
 public class Customer {
 
-    private int customerI;
+    private int customerID;
     private String firstName;
     private String lastName;
     private String password;
 
-    // FK
+    private boolean isLoggedIn;
+
     private int customer_locationID;
+
+
+
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setIsLoggedIn(boolean setIsLoggedIn) {
+        this.isLoggedIn = setIsLoggedIn;
+    }
+
+
+    // FK
+
 
     public Customer() {
     }
 
-    public Customer(int customerI, String firstName, String lastName, String password, int customer_locationID) {
-        this.customerI = customerI;
+    public Customer(int customerID, String firstName, String lastName, String password, int customer_locationID) {
+        this.customerID = customerID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.customer_locationID = customer_locationID;
+        isLoggedIn =false;
     }
 
     public int getCustomerID() {
-        return customerI;
+        return customerID;
     }
 
     public void setCustomerID(int customerI) {
-        this.customerI = customerI;
+        this.customerID = customerI;
     }
 
     public String getFirstName() {
