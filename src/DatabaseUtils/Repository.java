@@ -1,3 +1,5 @@
+package DatabaseUtils;
+
 import Customer.Customer;
 import Order.Order;
 import Shoe.Shoe;
@@ -5,7 +7,6 @@ import Order.OrderDetails;
 import Shoe.Brand;
 import Shoe.Model;
 
-import java.awt.*;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;

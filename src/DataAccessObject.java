@@ -1,4 +1,5 @@
 import Customer.Customer;
+import DatabaseUtils.Repository;
 import Order.Order;
 import Order.OrderDetails;
 import Shoe.Shoe;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class DataAccessObject {
 
-    // Skapa ett nytt Repository-objekt
+    // Skapa ett nytt DatabaseUtils.Repository-objekt
     Repository repository = new Repository();
 
     List<Shoe> shoeList;
