@@ -14,7 +14,7 @@ public class UserLogin {
     DataAccessObject DAO = new DataAccessObject();
 
 
-    public void login(List<Customer> customerList) {
+    public List login(List<Customer> customerList) {
 
 
         Customer customer = null;
@@ -37,10 +37,12 @@ public class UserLogin {
                 System.out.println("Invalid input");
             }
         }
+
+        return customerList;
     }
 
 
-    public void addToCart(List<Shoe> shoeList) {
+    public int addToCart(List<Shoe> shoeList) {
 
 
         System.out.println();
@@ -147,6 +149,7 @@ public class UserLogin {
                 .getShoeID();
 
         System.out.println("Interna skoID:"+finalShoeId);
+        return finalShoeId;
     }
 
     }
