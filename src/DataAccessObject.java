@@ -5,9 +5,7 @@ import Shoe.Shoe;
 import Shoe.Brand;
 import Shoe.Model;
 
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,6 +60,7 @@ public class DataAccessObject {
             throw new RuntimeException(e);
         }
 
+
         // lista med modeller från databasen
         List<Model> modelList = null;
         try {
@@ -95,11 +94,11 @@ public class DataAccessObject {
         return shoeList.stream().map(Shoe::getShoeSize).distinct().collect(Collectors.toList());
     }
 
-    public List<String> getPrices(List<Shoe> shoeList) {
-
-        // Skapa en lista med priser
-        return shoeList.stream().map(Shoe::getShoePrice).distinct().collect(Collectors.toList());
-    }
+//    public List<String> getPrices(List<Shoe> shoeList) {
+//
+//        // Skapa en lista med priser
+//        return shoeList.stream().map(Shoe::getShoePrice).distinct().collect(Collectors.toList());
+//    }
 
     public List<Integer> getSales(List<Shoe> shoeList) {
 
@@ -131,19 +130,19 @@ public class DataAccessObject {
         return customerList.stream().map(c -> c.getFirstName() + " " + c.getLastName()).collect(Collectors.toList());
     }
 
-    public void matchShoeToBrandAndModel(List<Shoe> shoeList, List<Brand> brandList, List<Model> modelList) {
-        for (Shoe shoe : shoeList) {
-            for (Brand brand : brandList) {
-                if (shoe.getShoe_brandID() == brand.getBrandID()) {
-                    for (Model model : modelList) {
-                        if (shoe.getShoe_modelID() == model.getModelID()) {
-                            System.out.println("Shoe with ID " + shoe.getShoeID() + " has brand " + brand.getBrandName() + " and model " + model.getModelName());
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-    }
+//    public void matchShoeToBrandAndModel(List<Shoe> shoeList, List<Brand> brandList, List<Model> modelList) {
+//        for (Shoe shoe : shoeList) {
+//            for (Brand brand : brandList) {
+//                if (shoe.getShoe_brandID() == brand.getBrandID()) {
+//                    for (Model model : modelList) {
+//                        if (shoe.getShoe_modelID() == model.getModelID()) {
+//                            System.out.println("Shoe with ID " + shoe.getShoeID() + " has brand " + brand.getBrandName() + " and model " + model.getModelName());
+//                            break;
+//                        }
+//                    }
+//                    break;
+//                }
+//            }
+//        }
+//    }
 }
