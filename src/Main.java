@@ -1,6 +1,7 @@
 import Customer.Customer;
 import Shoe.Brand;
 import Shoe.Model;
+import Shoe.Shoe;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,14 +29,14 @@ public class Main {
         Repository repository = new Repository();
         DataAccessObject dao = new DataAccessObject();
 
-        // Testar att hämta en lista med skor från databasen och skriva ut den i konsolen
+//         Testar att hämta en lista med skor från databasen och skriva ut den i konsolen
 //        List<Shoe> shoeList = repository.getShoeList();
 //        System.out.println("ShoeID Inventory Color Size Price Sales Shoe_Brand_ID Shoe_Model_ID");
 //        shoeList.forEach(shoe -> System.out.println(shoe.getShoeID()
 //                + " " + shoe.getInventory() + " " + shoe.getShoeColor()
 //                + " " + shoe.getShoeSize() + " " + shoe.getShoePrice()
-//                + " " + shoe.getShoeSales() + " " + shoe.getShoe_brandID()
-//                + " " + shoe.getShoe_modelID()));
+//                + " " + shoe.getShoeSales() + " " + shoe.getBrand().getBrandID()
+//                + " " + shoe.getModel().getModelID()));
 //        System.out.println(dao.getSizes(shoeList).get(0));
 
 //         Testar att hämta en lista med kunder från databasen och skriva ut den i konsolen
@@ -66,11 +67,11 @@ public class Main {
 //                + " " + brand.getBrandName()));
 //
         // Testar att hämta en lista med modeller från databasen och skriva ut den i konsolen
-        List<Model> modelList = repository.getModelList();
-        System.out.println("ModelID ModelName");
-        modelList.forEach(model -> System.out.println(model.getModelID()
-                + " " + model.getModelName()));
-//
+//        List<Model> modelList = repository.getModelList();
+//        System.out.println("ModelID ModelName");
+//        modelList.forEach(model -> System.out.println(model.getModelID()
+//                + " " + model.getModelName()));
+////
 
 
     }

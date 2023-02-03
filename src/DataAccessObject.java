@@ -95,11 +95,11 @@ public class DataAccessObject {
         return shoeList.stream().map(Shoe::getShoeSize).distinct().collect(Collectors.toList());
     }
 
-    public List<String> getPrices(List<Shoe> shoeList) {
-
-        // Skapa en lista med priser
-        return shoeList.stream().map(Shoe::getShoePrice).distinct().collect(Collectors.toList());
-    }
+//    public List<String> getPrices(List<Shoe> shoeList) {
+//
+//        // Skapa en lista med priser
+//        return shoeList.stream().map(Shoe::getShoePrice).distinct().collect(Collectors.toList());
+//    }
 
     public List<Integer> getSales(List<Shoe> shoeList) {
 

@@ -6,7 +6,16 @@ public class Shoe {
     private int inventory;
     private String shoeColor;
     private int shoeSize;
-    private String shoePrice;
+
+    public double getShoePrice() {
+        return shoePrice;
+    }
+
+    public void setShoePrice(double shoePrice) {
+        this.shoePrice = shoePrice;
+    }
+
+    private double shoePrice;
     private int shoeSales;
     private Brand brand;
     private Model model;
@@ -19,7 +28,7 @@ public class Shoe {
     public Shoe() {
     }
 
-    public Shoe(int shoeID, int inventory, String shoeColor, int shoeSize, String shoePrice, int shoeSales) {
+    public Shoe(int shoeID, int inventory, String shoeColor, int shoeSize, double shoePrice, int shoeSales) {
         this.shoeID = shoeID;
         this.inventory = inventory;
         this.shoeColor = shoeColor;
@@ -79,13 +88,7 @@ public class Shoe {
         this.shoeSize = shoeSize;
     }
 
-    public String getShoePrice() {
-        return shoePrice;
-    }
 
-    public void setShoePrice(String shoePrice) {
-        this.shoePrice = shoePrice;
-    }
 
     public int getShoeSales() {
         return shoeSales;
