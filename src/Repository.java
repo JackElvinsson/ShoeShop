@@ -19,7 +19,7 @@ public class Repository {
         try (
                 Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT ShoeID, Inventory, Color, `Size`, Price, Sales, Shoe_Brand_ID, Shoe_Model_ID FROM shoe");) {
+                ResultSet resultSet = statement.executeQuery("SELECT ShoeID, Inventory, Color, `Size`, Price, Sales, Shoe_Brand_ID, Shoe_Brand_Name, Shoe_Model_ID, Shoe_Model_Name FROM shoe INNER JOIN brand ON shoe.Shoe_Brand_ID = brand.BrandID INNER JOIN model ON shoe.Shoe_Model_ID = model.ModelID");) {
 
             List<Shoe> shoeList = new ArrayList<>();
 
@@ -39,10 +39,12 @@ public class Repository {
                 tempShoe.setShoePrice(price);
                 int sales = resultSet.getInt("Sales");
                 tempShoe.setShoeSales(sales);
-                int shoe_BrandID = resultSet.getInt("Shoe_Brand_ID");
-                tempShoe.setShoe_brandID(shoe_BrandID);
-                int shoe_ModelID = resultSet.getInt("Shoe_Model_ID");
-                tempShoe.setShoe_modelID(shoe_ModelID);
+                int shoeBrandID = resultSet.getInt("Shoe_Brand_ID");
+                String shoeBrandName = resultSet.getString("Shoe_Brand_Name");
+                tempShoe.setBrand(new Brand(shoeBrandID, shoeBrandName));
+                int shoeModelID = resultSet.getInt("Shoe_Model_ID");
+                String shoeModelName = resultSet.getString("Shoe_Model_Name");
+                tempShoe.setModel(new Model(shoeModelID, shoeModelName));
 
                 shoeList.add(tempShoe);
 

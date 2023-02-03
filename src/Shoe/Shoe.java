@@ -8,24 +8,43 @@ public class Shoe {
     private int shoeSize;
     private String shoePrice;
     private int shoeSales;
+    private Brand brand;
+    private Model model;
 
-    // FKs
-    private int shoe_brandID;
-    private int shoe_modelID;
+     //FK
+//    private int shoe_brandID;
+//    private int shoe_modelID;
 
     //empty constructor
     public Shoe() {
     }
 
-    public Shoe(int shoeID, int inventory, String shoeColor, int shoeSize, String shoePrice, int shoeSales, int shoe_brandID, int shoe_modelID) {
+    public Shoe(int shoeID, int inventory, String shoeColor, int shoeSize, String shoePrice, int shoeSales) {
         this.shoeID = shoeID;
         this.inventory = inventory;
         this.shoeColor = shoeColor;
         this.shoeSize = shoeSize;
         this.shoePrice = shoePrice;
         this.shoeSales = shoeSales;
-        this.shoe_brandID = shoe_brandID;
-        this.shoe_modelID = shoe_modelID;
+//        this.shoe_brandID = shoe_brandID;
+//        this.shoe_modelID = shoe_modelID;
+    }
+
+
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(Brand brand) {
+        this.brand = brand;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
     }
 
     public int getShoeID() {
@@ -76,19 +95,5 @@ public class Shoe {
         this.shoeSales = shoeSales;
     }
 
-    public int getShoe_brandID() {
-        return shoe_brandID;
-    }
 
-    public void setShoe_brandID(int shoe_brandID) {
-        this.shoe_brandID = shoe_brandID;
-    }
-
-    public int getShoe_modelID() {
-        return shoe_modelID;
-    }
-
-    public void setShoe_modelID(int shoe_modelID) {
-        this.shoe_modelID = shoe_modelID;
-    }
 }

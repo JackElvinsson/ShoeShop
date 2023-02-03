@@ -7,6 +7,13 @@ public class Customer {
     private String lastName;
     private String password;
 
+    private boolean isLoggedIn;
+
+    private int customer_locationID;
+
+
+
+
     public boolean isLoggedIn() {
         return isLoggedIn;
     }
@@ -15,9 +22,9 @@ public class Customer {
         this.isLoggedIn = setIsLoggedIn;
     }
 
-    private boolean isLoggedIn;
+
     // FK
-    private int customer_locationID;
+
 
     public Customer() {
     }
