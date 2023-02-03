@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class DataAccessObject {
 
-    // Skapa ett nytt DatabaseUtils.Repository-objekt
+    // Skapa ett nytt Repository-objekt
     Repository repository = new Repository();
 
     List<Shoe> shoeList;
