@@ -14,7 +14,7 @@ public class UserLogin {
     DataAccessObject DAO = new DataAccessObject();
 
 
-    public List login(List<Customer> customerList) {
+    public List<Customer> login(List<Customer> customerList) {
 
 
         Customer customer = null;
@@ -148,7 +148,7 @@ public class UserLogin {
                 .get()
                 .getShoeID();
 
-        System.out.println("Interna skoID:"+finalShoeId);
+        //System.out.println("Interna skoID:"+finalShoeId);
         return finalShoeId;
     }
 

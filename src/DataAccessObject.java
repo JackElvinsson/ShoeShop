@@ -14,10 +14,40 @@ public class DataAccessObject {
     // Skapa ett nytt Repository-objekt
     Repository repository = new Repository();
 
+    List<Shoe> shoeList;
+    List<Customer> customerList;
+    List<Order> orderList;
+    List<OrderDetails> orderDetailsList;
+    List<Brand> brandList;
+    List<Model> modelList;
+
+    public List<Shoe> getShoeList() {
+        return shoeList;
+    }
+
+    public List<Customer> getCustomerList() {
+        return customerList;
+    }
+
+    public List<Order> getOrderList() {
+        return orderList;
+    }
+
+    public List<OrderDetails> getOrderDetailsList() {
+        return orderDetailsList;
+    }
+
+    public List<Brand> getBrandList() {
+        return brandList;
+    }
+
+    public List<Model> getModelList() {
+        return modelList;
+    }
+
     public DataAccessObject() {
 
         // lista med skor från databasen
-        List<Shoe> shoeList = null;
         try {
             shoeList = repository.getShoeList();
         } catch (IOException e) {
@@ -26,7 +56,6 @@ public class DataAccessObject {
 
 
         // lista med kunder från databasen
-        List<Customer> customerList = null;
         try {
             customerList = repository.getCustomerList();
         } catch (IOException e) {
@@ -35,7 +64,6 @@ public class DataAccessObject {
 
 
         // lista med ordrar från databasen
-        List<Order> orderList = null;
         try {
             orderList = repository.getOrderList();
         } catch (IOException e) {
@@ -44,7 +72,6 @@ public class DataAccessObject {
 
 
         // lista med orderDetails från databasen
-        List<OrderDetails> orderDetailsList = null;
         try {
             orderDetailsList = repository.getOrderDetailsList();
         } catch (IOException e) {
@@ -53,7 +80,6 @@ public class DataAccessObject {
 
 
         // lista med varumärken från databasen
-        List<Brand> brandList = null;
         try {
             brandList = repository.getBrandList();
         } catch (IOException e) {
@@ -62,7 +88,6 @@ public class DataAccessObject {
 
 
         // lista med modeller från databasen
-        List<Model> modelList = null;
         try {
             modelList = repository.getModelList();
         } catch (IOException e) {

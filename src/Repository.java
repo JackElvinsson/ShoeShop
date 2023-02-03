@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 
 public class Repository {
@@ -209,6 +210,57 @@ public class Repository {
             throw new RuntimeException(e);
         }
     }
+
+    public void addToCart(int shoeID, List<Customer> customerList) throws IOException {
+
+        try (
+                Connection connection = ConnectionHandler.getConnection(); ){
+
+
+
+            String callStoredProcedure = "{ call AddToCart(?,?,?) }";
+            CallableStatement cs = connection.prepareCall(callStoredProcedure);
+            cs.setInt(1, getCurrentCustomerID(customerList));
+            cs.setInt(2, getOrderList().size() + 1);
+            cs.setInt(3, shoeID);
+            cs.execute();
+
+            System.out.println("Successfully added to cart");
+
+        } catch (SQLException e) {
+
+            System.out.println("Failed to add to cart");
+            throw new RuntimeException(e);
+        }
+    }
+
+    //TODO: Implementera denna metod
+    private <T> List<T> getList(String query, Function<ResultSet, T> rowMapper) {
+        try (
+                Connection connection = ConnectionHandler.getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(query);
+        ) {
+            List<T> list = new ArrayList<>();
+            while (resultSet.next()) {
+                T item = rowMapper.apply(resultSet);
+                list.add(item);
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int getCurrentCustomerID(List<Customer> customerList) {
+
+        return customerList.stream()
+                .filter(c -> c.isLoggedIn())
+                .findFirst()
+                .map(Customer::getCustomerID)
+                .orElse(0);
+    }
+
 }
 
 

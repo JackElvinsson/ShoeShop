@@ -27,57 +27,21 @@ public class Main {
 
 
         Repository repository = new Repository();
-        DataAccessObject dao = new DataAccessObject();
-        List<Customer> customerList = repository.getCustomerList();
-        List<Shoe> shoeList = repository.getShoeList();
+        DataAccessObject DAO = new DataAccessObject();
+        List<Customer> customerList = DAO.getCustomerList();
+        List<Shoe> shoeList = DAO.getShoeList();
+
+        int shoeId = 0;
+        List<Customer> customerListPost = repository.getCustomerList();
 
         UserLogin ul=new UserLogin();
-        ul.login(customerList);
-        ul.addToCart(shoeList);
+        customerListPost = ul.login(customerList);
+        shoeId = ul.addToCart(shoeList);
+        repository.addToCart(shoeId, customerListPost);
 
-//         Testar att hämta en lista med skor från databasen och skriva ut den i konsolen
-//        List<Shoe> shoeList = repository.getShoeList();
-//        System.out.println("ShoeID Inventory Color Size Price Sales Shoe_Brand_ID Shoe_Model_ID");
-//        shoeList.forEach(shoe -> System.out.println(shoe.getShoeID()
-//                + " " + shoe.getInventory() + " " + shoe.getShoeColor()
-//                + " " + shoe.getShoeSize() + " " + shoe.getShoePrice()
-//                + " " + shoe.getShoeSales() + " " + shoe.getBrand().getBrandID()
-//                + " " + shoe.getModel().getModelID()));
-//        System.out.println(dao.getSizes(shoeList).get(0));
 
-//         Testar att hämta en lista med kunder från databasen och skriva ut den i konsolen
-//        List<Customer> customerList = repository.getCustomerList();
-//        System.out.println("CustomerID FirstName LastName Password Customer_locationID");
-//        customerList.forEach(customer -> System.out.println(customer.getCustomerID()
-//                + " " + customer.getFirstName() + " " + customer.getLastName()
-//                + " " + customer.getPassword() + " " + customer.getCustomer_locationID()));
-//
-//        login(customerList);
 
-//        // Testar att hämta en lista med ordrar från databasen och skriva ut den i konsolen
-//        List<Order> orderList = repository.getOrderList();
-//        System.out.println("OrderID OrderDate Order_locationID");
-//        orderList.forEach(order -> System.out.println(order.getOrderID()
-//                + " " + order.getOrderDate() + " " + order.getOrder_locationID()));
-//
-//        // Testar att hämta en lista med orderDetails från databasen och skriva ut den i konsolen
-//        List<OrderDetails> orderDetailsList = repository.getOrderDetailsList();
-//        System.out.println("OrderDetails_orderID orderDetails_ShoeID Quantity");
-//        orderDetailsList.forEach(orderDetpails -> System.out.println(orderDetails.getOrderdetails_orderID()
-//                + " " + orderDetails.getOrderdetails_shoeID() + " " + orderDetails.getQuantity()));
-//
-//        // Testar att hämta en lista med varumärken från databasen och skriva ut den i konsolen
-//        List<Brand> brandList = repository.getBrandList();
-//        System.out.println("BrandID BrandName");
-//        brandList.forEach(brand -> System.out.println(brand.getBrandID()
-//                + " " + brand.getBrandName()));
-//
-        // Testar att hämta en lista med modeller från databasen och skriva ut den i konsolen
-//        List<Model> modelList = repository.getModelList();
-//        System.out.println("ModelID ModelName");
-//        modelList.forEach(model -> System.out.println(model.getModelID()
-//                + " " + model.getModelName()));
-////
+
 
 
     }

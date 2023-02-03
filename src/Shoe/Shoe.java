@@ -6,23 +6,15 @@ public class Shoe {
     private int inventory;
     private String shoeColor;
     private int shoeSize;
-
-    public double getShoePrice() {
-        return shoePrice;
-    }
-
-    public void setShoePrice(double shoePrice) {
-        this.shoePrice = shoePrice;
-    }
-
     private double shoePrice;
     private int shoeSales;
     private Brand brand;
     private Model model;
 
-     //FK
+    //FK
 //    private int shoe_brandID;
 //    private int shoe_modelID;
+
 
     //empty constructor
     public Shoe() {
@@ -39,6 +31,14 @@ public class Shoe {
 //        this.shoe_modelID = shoe_modelID;
     }
 
+
+    public double getShoePrice() {
+        return shoePrice;
+    }
+
+    public void setShoePrice(double shoePrice) {
+        this.shoePrice = shoePrice;
+    }
 
     public Brand getBrand() {
         return brand;
