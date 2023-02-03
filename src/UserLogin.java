@@ -22,7 +22,7 @@ public class UserLogin {
             System.out.print("Enter password: ");
             String password = scanner.nextLine();
 
-            // Use lambda to check if the user exists. Ignores case on 'firstname' aka username.
+            // Använder lambda för att se om det finns en användare som matchar angivet namn&pw. Ignores case on 'firstname' aka username.
             customer = customerList.stream().filter(c -> c.getFirstName().equalsIgnoreCase(firstName) && c.getPassword().equals(password)).findFirst().orElse(null);
 
             if (customer != null) {
