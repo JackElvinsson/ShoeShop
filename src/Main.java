@@ -28,6 +28,12 @@ public class Main {
 
         Repository repository = new Repository();
         DataAccessObject dao = new DataAccessObject();
+        List<Customer> customerList = repository.getCustomerList();
+        List<Shoe> shoeList = repository.getShoeList();
+
+        UserLogin ul=new UserLogin();
+        ul.login(customerList);
+        ul.addToCart(shoeList);
 
 //         Testar att hämta en lista med skor från databasen och skriva ut den i konsolen
 //        List<Shoe> shoeList = repository.getShoeList();

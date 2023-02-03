@@ -1,30 +1,85 @@
 import Customer.Customer;
+import Shoe.Shoe;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class UserLogin {
 
+    Scanner scanner = new Scanner(System.in);    //skannern kan användas i hela UserLogin.
 
 
-    public static void login(List<Customer> customerList){
-    Scanner sc = new Scanner(System.in);
+    public void login(List<Customer> customerList) {
 
-        System.out.print("Enter first name: ");
-    String firstName = sc.nextLine();
-        System.out.print("Enter password: ");
-    String password = sc.nextLine();
 
-    // Använder lambda för att kontrollera om användaren finns. Ignonerar case på 'firstname' aka username.
-    Customer customer = customerList.stream().filter(c -> c.getFirstName().equalsIgnoreCase(firstName) && c.getPassword().equals(password)).findFirst().orElse(null);
+        Customer customer = null;
 
-        if (customer != null) {
-        System.out.println("Welcome, " + firstName + "!");
-        customer.setIsLoggedIn(true);
-        System.out.println(customer.getFirstName() + " Loggedin="+customer.isLoggedIn());
-        //start addtocart-method...
-    } else {
-        System.out.println("Invalid input");
+        while (customer == null) {
+            System.out.print("Enter first name: ");
+            String firstName = scanner.nextLine();
+            System.out.print("Enter password: ");
+            String password = scanner.nextLine();
+
+            // Use lambda to check if the user exists. Ignores case on 'firstname' aka username.
+            customer = customerList.stream().filter(c -> c.getFirstName().equalsIgnoreCase(firstName) && c.getPassword().equals(password)).findFirst().orElse(null);
+
+            if (customer != null) {
+                System.out.println("Välkommen " + firstName + "!");
+                customer.setIsLoggedIn(true); //flaggar kunden som inloggad. Då endast en kan logga in behöver vi inte ha koll på något ID just nu.
+                System.out.println(customer.getFirstName() + " Loggedin=" + customer.isLoggedIn());
+                //start addtocart-method...
+            } else {
+                System.out.println("Invalid input");
+            }
+        }
     }
-}
-}
+
+
+    public void addToCart(List<Shoe> shoeList) {
+
+
+        System.out.println();
+        System.out.println("Skriv in modellnamnet på skon du vill köpa");
+        System.out.println();
+
+        Set<String> Modeltypes = new HashSet<>();
+        for (Shoe shoe : shoeList) {
+            Modeltypes.add(shoe.getModel().getModelName());
+        }
+
+        for (String modelName : Modeltypes) {
+            String brandName = shoeList.stream()
+                    .filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(modelName))
+                    .findFirst()
+                    .get()
+                    .getBrand()
+                    .getBrandName();
+            System.out.println(String.format("%-15s %-15s", modelName, brandName));
+        }
+
+
+        String userInputOfShoeModel;
+        Shoe matchingShoe = null;
+
+        while (matchingShoe == null) {
+            userInputOfShoeModel = scanner.nextLine();
+
+            for (Shoe shoe : shoeList) {
+                if (shoe.getModel().getModelName().equalsIgnoreCase(userInputOfShoeModel)) {
+                    matchingShoe = shoe;
+                    break;
+                }}
+
+            if (matchingShoe == null) {
+                System.out.println("Hittade ingen skomodell med namn " + userInputOfShoeModel);
+            }
+        }
+
+        System.out.println("vald sko " + matchingShoe.getBrand().getBrandName()+" "+matchingShoe.getModel().getModelName());
+
+    }
+
+    }
+
