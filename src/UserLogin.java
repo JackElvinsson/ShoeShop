@@ -1,6 +1,7 @@
 import Customer.Customer;
 import Shoe.Shoe;
 
+import javax.xml.crypto.Data;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -9,6 +10,7 @@ import java.util.Set;
 public class UserLogin {
 
     Scanner scanner = new Scanner(System.in);    //skannern kan användas i hela UserLogin.
+    DataAccessObject DAO = new DataAccessObject();
 
 
     public void login(List<Customer> customerList) {
@@ -78,6 +80,15 @@ public class UserLogin {
         }
 
         System.out.println("vald sko " + matchingShoe.getBrand().getBrandName()+" "+matchingShoe.getModel().getModelName());
+
+        System.out.println("skon finns i storlekarna: ");
+
+            for (int i = 0; i < DAO.getSizes(shoeList).size(); i++) {
+                System.out.print(DAO.getSizes(shoeList).get(i) + " - " + DAO.getColors(shoeList).get(i) + "\n");
+
+        }
+        System.out.println("Välj vilken storlek du vill köpa: ");
+        int size = scanner.nextInt();
 
     }
 
