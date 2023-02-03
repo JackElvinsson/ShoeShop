@@ -63,7 +63,7 @@ public class Main {
 //        // Testar att hämta en lista med orderDetails från databasen och skriva ut den i konsolen
 //        List<OrderDetails> orderDetailsList = repository.getOrderDetailsList();
 //        System.out.println("OrderDetails_orderID orderDetails_ShoeID Quantity");
-//        orderDetailsList.forEach(orderDetails -> System.out.println(orderDetails.getOrderdetails_orderID()
+//        orderDetailsList.forEach(orderDetpails -> System.out.println(orderDetails.getOrderdetails_orderID()
 //                + " " + orderDetails.getOrderdetails_shoeID() + " " + orderDetails.getQuantity()));
 //
 //        // Testar att hämta en lista med varumärken från databasen och skriva ut den i konsolen
@@ -83,27 +83,27 @@ public class Main {
     }
 
 
-    public static void login(List<Customer> customerList){
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("Enter first name: ");
-        String firstName = sc.nextLine();
-        System.out.print("Enter password: ");
-        String password = sc.nextLine();
-
-        // Använder lambda för att kontrollera om användaren finns. Ignonerar case på 'firstname' aka username.
-        Customer customer = customerList.stream().filter(c -> c.getFirstName().equalsIgnoreCase(firstName) && c.getPassword().equals(password)).findFirst().orElse(null);
-
-        if (customer != null) {
-            System.out.println("Welcome, " + firstName + "!");
-            customer.setIsLoggedIn(true);
-            System.out.println(customer.getFirstName() + " Loggedin="+customer.isLoggedIn());
-            //start addtocart-method...
-        } else {
-            System.out.println("Invalid input");
-        }
-}
+//    public static void login(List<Customer> customerList){
+//
+//        Scanner sc = new Scanner(System.in);
+//
+//        System.out.print("Enter first name: ");
+//        String firstName = sc.nextLine();
+//        System.out.print("Enter password: ");
+//        String password = sc.nextLine();
+//
+//        // Använder lambda för att kontrollera om användaren finns. Ignonerar case på 'firstname' aka username.
+//        Customer customer = customerList.stream().filter(c -> c.getFirstName().equalsIgnoreCase(firstName) && c.getPassword().equals(password)).findFirst().orElse(null);
+//
+//        if (customer != null) {
+//            System.out.println("Welcome, " + firstName + "!");
+//            customer.setIsLoggedIn(true);
+//            System.out.println(customer.getFirstName() + " Loggedin="+customer.isLoggedIn());
+//            //start addtocart-method...
+//        } else {
+//            System.out.println("Invalid input");
+//        }
+//}
 
 }
 
