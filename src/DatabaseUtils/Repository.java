@@ -146,7 +146,7 @@ public class Repository {
                 int locationID = resultSet.getInt("LocationID");
                 String locationName = resultSet.getString("Name");
                 tempCustomer.setLocation(new Location(locationID, locationName));
-
+                tempCustomer.setOrderList(getOrdersForCustomer(customerID)); //hämtar orderlista för kunden.
                 customerList.add(tempCustomer);
 
             }
@@ -170,7 +170,7 @@ public class Repository {
 
             ResultSet resultSet = statement.executeQuery();
 
-            List<Order> orders = new ArrayList<>();
+            List<Order> orderList = new ArrayList<>();
             Map<Integer, Order> orderMap = new HashMap<>();
 
             while (resultSet.next()) {
@@ -182,14 +182,14 @@ public class Repository {
                     LocalDate date = resultSet.getDate("Date").toLocalDate();
                     tempOrder.setOrderDate(date);
                     orderMap.put(orderId, tempOrder);
-                    orders.add(tempOrder);
+                    orderList.add(tempOrder);
                 }
                 int orderDetails_Shoe_ID = resultSet.getInt("OrderDetails_Shoe_ID");
                 int quantity = resultSet.getInt("Quantity");
                 tempOrder.getOrderDetailsList().add(new OrderDetails(quantity, orderDetails_Shoe_ID, orderId));
             }
 
-            return orders;
+            return orderList;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
