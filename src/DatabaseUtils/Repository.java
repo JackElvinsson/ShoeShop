@@ -162,9 +162,13 @@ public class Repository {
     public List<Order> getOrdersForCustomer(int customerId) throws IOException {
         try (
                 Connection connection = ConnectionHandler.getConnection();
-                PreparedStatement statement = connection.prepareStatement("SELECT Order.OrderID, Order.Date,OrderDetail.OrderDetails_Order_ID, OrderDetails.OrderDetails_Shoe_ID, OrderDetails.Quantity FROM Order\n" +
-                        "JOIN OrderDetails ON Order.OrderID = OrderDetail.OrderDetails_Order_ID\n" +
-                        "WHERE Order.Customer_CustomerID = ?");
+                PreparedStatement statement = connection.prepareStatement(
+                        "SELECT Order.OrderID, Order.OrderDate, OrderDetails.OrderDetails_Order_ID, OrderDetails.OrderDetails_Shoe_ID, OrderDetails.Quantity " +
+                                "FROM `Order` " +
+                                "JOIN OrderDetails ON Order.OrderID = OrderDetails.OrderDetails_Order_ID " +
+                                "JOIN OrdersPlacedBy ON Order.OrderID = OrdersPlacedBy.OrdersPlacedBy_Order_ID " +
+                                "WHERE OrdersPlacedBy.OrdersPlacedBy_Customer_ID = ?"
+                );
         ) {
             statement.setInt(1, customerId);
 
@@ -179,7 +183,7 @@ public class Repository {
                 if (tempOrder == null) {
                     tempOrder = new Order();
                     tempOrder.setOrderID(orderId);
-                    LocalDate date = resultSet.getDate("Date").toLocalDate();
+                    LocalDate date = resultSet.getDate("OrderDate").toLocalDate();
                     tempOrder.setOrderDate(date);
                     orderMap.put(orderId, tempOrder);
                     orderList.add(tempOrder);
@@ -193,8 +197,11 @@ public class Repository {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }
+        }catch (NullPointerException ne){
+            System.out.println("kundID: "+customerId);
+        }throw new NullPointerException();
     }
+
 
 
 
