@@ -1,5 +1,7 @@
 package Order;
 
+import Customer.Location;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -10,15 +12,16 @@ public class Order {
 
     private List<OrderDetails> orderDetailsList;
 
+
     // FK
-    private int order_locationID; //vet ej om vi ska spara denna. Ska odern kunna ha en annan plats än kunden? Kan också göra som till en location om det finns behov. Finns inget behov att ändra än så länge, låter vara.
+    private Location order_locationID; //vet ej om vi ska spara denna. Ska odern kunna ha en annan plats än kunden? Kan också göra som till en location om det finns behov. Finns inget behov att ändra än så länge, låter vara.
 
 
 
     public Order() {
     }
 
-    public Order(int orderID, LocalDate orderDate, int order_locationID) {
+    public Order(int orderID, LocalDate orderDate, Location order_locationID) {
         this.orderID = orderID;
         this.orderDate = orderDate;
         this.order_locationID = order_locationID;
@@ -41,11 +44,11 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public int getOrder_locationID() {
+    public Location getOrder_locationID() {
         return order_locationID;
     }
 
-    public void setOrder_locationID(int order_locationID) {
+    public void setOrder_locationID(Location order_locationID) {
         this.order_locationID = order_locationID;
     }
 
