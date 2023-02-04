@@ -1,5 +1,10 @@
 package Customer;
 
+import Order.Order;
+import Order.OrderDetails;
+
+import java.util.List;
+
 public class Customer {
 
     private int customerID;
@@ -9,7 +14,10 @@ public class Customer {
 
     private boolean isLoggedIn;
 
-    private int customer_locationID;
+    private Location location;
+    private List<Order> orderList;
+
+
 
 
 
@@ -29,12 +37,12 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(int customerID, String firstName, String lastName, String password, int customer_locationID) {
+    public Customer(int customerID, String firstName, String lastName, String password, Location location) {
         this.customerID = customerID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
-        this.customer_locationID = customer_locationID;
+        this.location = location;
         isLoggedIn =false;
     }
 
@@ -70,11 +78,11 @@ public class Customer {
         this.password = password;
     }
 
-    public int getCustomer_locationID() {
-        return customer_locationID;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setCustomer_locationID(int customer_locationID) {
-        this.customer_locationID = customer_locationID;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

@@ -64,12 +64,12 @@ public class DataAccessObject {
         }
 
 
-        // lista med ordrar från databasen
-        try {
-            orderList = repository.getOrderList();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        // lista med ordrar från databasen
+//        try {
+//            orderList = repository.getOrderList();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
 
         // lista med orderDetails från databasen

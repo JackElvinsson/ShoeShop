@@ -1,6 +1,6 @@
 package DatabaseUtils;
 
-import Customer.Customer;
+import Customer.*;
 import Order.Order;
 import Shoe.Shoe;
 import Order.OrderDetails;
@@ -9,8 +9,11 @@ import Shoe.Model;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 
@@ -123,7 +126,8 @@ public class Repository {
         try (
                 Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT CustomerID, FirstName, LastName, Passwordd, Customer_Location_ID FROM Customer");) {
+                ResultSet resultSet = statement.executeQuery("SELECT Customer.CustomerID, Customer.FirstName, Customer.LastName, Customer.Passwordd, Location.LocationID, Location.Name FROM Customer\n" +
+                        "JOIN Location ON Customer.Customer_Location_ID = Location.LocationID");) {
 
             List<Customer> customerList = new ArrayList<>();
 
@@ -139,8 +143,9 @@ public class Repository {
                 tempCustomer.setLastName(lastName);
                 String password = resultSet.getString("Passwordd");
                 tempCustomer.setPassword(password);
-                int customer_locationID = resultSet.getInt("Customer_Location_ID");
-                tempCustomer.setCustomer_locationID(customer_locationID);
+                int locationID = resultSet.getInt("LocationID");
+                String locationName = resultSet.getString("Name");
+                tempCustomer.setLocation(new Location(locationID, locationName));
 
                 customerList.add(tempCustomer);
 
@@ -151,6 +156,47 @@ public class Repository {
             throw new RuntimeException(e);
         }
     }
+
+
+
+    public List<Order> getOrdersForCustomer(int customerId) throws IOException {
+        try (
+                Connection connection = ConnectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement("SELECT Order.OrderID, Order.Date,OrderDetail.OrderDetails_Order_ID, OrderDetails.OrderDetails_Shoe_ID, OrderDetails.Quantity FROM Order\n" +
+                        "JOIN OrderDetails ON Order.OrderID = OrderDetail.OrderDetails_Order_ID\n" +
+                        "WHERE Order.Customer_CustomerID = ?");
+        ) {
+            statement.setInt(1, customerId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            List<Order> orders = new ArrayList<>();
+            Map<Integer, Order> orderMap = new HashMap<>();
+
+            while (resultSet.next()) {
+                int orderId = resultSet.getInt("OrderID");
+                Order tempOrder = orderMap.get(orderId);
+                if (tempOrder == null) {
+                    tempOrder = new Order();
+                    tempOrder.setOrderID(orderId);
+                    LocalDate date = resultSet.getDate("Date").toLocalDate();
+                    tempOrder.setOrderDate(date);
+                    orderMap.put(orderId, tempOrder);
+                    orders.add(tempOrder);
+                }
+                int orderDetails_Shoe_ID = resultSet.getInt("OrderDetails_Shoe_ID");
+                int quantity = resultSet.getInt("Quantity");
+                tempOrder.getOrderDetailsList().add(new OrderDetails(quantity, orderDetails_Shoe_ID, orderId));
+            }
+
+            return orders;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
     public List<Order> getOrderList() throws IOException {
 
@@ -167,7 +213,7 @@ public class Repository {
 
                 int orderID = resultSet.getInt("OrderID");
                 tempOrder.setOrderID(orderID);
-                String orderDate = resultSet.getString("OrderDate");
+                LocalDate orderDate = resultSet.getDate("OrderDate").toLocalDate();
                 tempOrder.setOrderDate(orderDate);
                 int order_locationID = resultSet.getInt("Order_Location_ID");
                 tempOrder.setOrder_locationID(order_locationID);
