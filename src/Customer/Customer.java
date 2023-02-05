@@ -1,7 +1,6 @@
 package Customer;
 
 import Order.Order;
-import Order.OrderDetails;
 
 import java.util.List;
 
@@ -11,14 +10,9 @@ public class Customer {
     private String firstName;
     private String lastName;
     private String password;
-
     private boolean isLoggedIn;
-
     private Location location;
     private List<Order> orderList;
-
-
-
 
 
 
@@ -32,8 +26,6 @@ public class Customer {
 
 
     // FK
-
-
     public Customer() {
     }
 
