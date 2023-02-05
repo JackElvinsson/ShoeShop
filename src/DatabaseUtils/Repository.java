@@ -20,15 +20,18 @@ import java.util.function.Function;
 public class Repository {
 
     // Dessa metoder hämtar en lista med objekt från databasen
-    // De tar emot en query-sträng och en funktion(getList) som tar emot ett ResultSet och som i sin tur returnerar ett objekt
+    // De använder en funktion som tar emot en query-sträng samt ett resultSet<T> och som sedan returnerar ett objekt som läggs till i en lista
     // De returnerar till sist en lista med objekt
     public List<Shoe> getShoeList() throws IOException {
 
-        String query = "SELECT shoe.ShoeID, shoe.Inventory, shoe.Color, shoe.Size, shoe.Price, shoe.Sales, brand.BrandID, brand.BrandName, model.ModelID, model.ModelName" +
-                "FROM shoe" +
-                "JOIN brand ON shoe.Shoe_Brand_ID = brand.BrandID" +
+        String query = "SELECT shoe.ShoeID, shoe.Inventory, shoe.Color, shoe.Size, shoe.Price, shoe.Sales, brand.BrandID, brand.BrandName, model.ModelID, model.ModelName " +
+                "FROM shoe " +
+                "JOIN brand ON shoe.Shoe_Brand_ID = brand.BrandID " +
                 "JOIN model ON shoe.Shoe_Model_ID = model.ModelID;";
 
+        // Använder en lambda-funktion för att skapa ett Shoe-objekt
+        // Lambda-funktionen tar emot ett resultSet och returnerar ett Shoe-objekt med värden från resultSet
+        // getList returnerar sedan en lista med Shoe-objekt
         return getList(query, resultSet -> {
 
             Shoe tempShoe = new Shoe();
@@ -186,6 +189,8 @@ public class Repository {
         });
     }
 
+    // Denna metod kallar på en stored procedure som lägger till en sko i kundens kundvagn
+    // Den tar emot ett skoID och en lista med kunder, letar upp den inloggade kundens ID och lägger till skon i kundens kundvagn
     public void addToCart(int shoeID, List<Customer> customerList) throws IOException {
 
         try (Connection connection = ConnectionHandler.getConnection();) {
@@ -198,19 +203,18 @@ public class Repository {
             cs.setInt(3, shoeID);
             cs.execute();
 
-            System.out.println("Successfully added to cart");
+            System.out.println("Skon har lagts till i kundvagnen");
 
         } catch (SQLException e) {
 
-            System.out.println("Failed to add to cart");
+            System.out.println("Lyckades inte lägga till skon i kundvagnen");
             throw new RuntimeException(e);
         }
     }
 
 
-    // Denna metod är en generisk metod som tar emot en query och en funktion som tar emot en ResultSet och returnerar en lista av objekt
+    // Denna metod är en generisk metod som tar emot en query-sträng och en funktion som tar emot en ResultSet och returnerar en lista av objekt
     // Den används för att hämta data från databasen och returnera en lista av objekt
-    // Den används i metoder som hämtar data från databasen
     private <T> List<T> getList(String query, Function<ResultSet, T> rowMapper) {
         try (
                 Connection connection = ConnectionHandler.getConnection();

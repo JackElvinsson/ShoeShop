@@ -11,15 +11,35 @@ import java.util.Scanner;
 
 public class Main {
 
+    Repository repository;
+    DataAccessObject DAO;
+    ReportTaskRepository reportTaskHandler;
+    List<Customer> customerList;
+    List<Shoe> shoeList;
+    List<Customer> customerListPost;
+
+
     Main() throws IOException {
 
-        Repository repository = new Repository();
-        DataAccessObject DAO = new DataAccessObject();
-        ReportTaskRepository reportTaskHandler = new ReportTaskRepository();
+        while (true) {
+            login();
+        }
+    }
 
-        List<Customer> customerList = DAO.getCustomerList();
-        List<Shoe> shoeList = DAO.getShoeList();
-        List<Customer> customerListPost = repository.getCustomerList();
+    public static void main(String[] args) throws IOException {
+        new Main();
+
+    }
+
+    public void login() throws IOException {
+
+        repository = new Repository();
+        DAO = new DataAccessObject();
+        reportTaskHandler = new ReportTaskRepository();
+
+        customerList = DAO.getCustomerList();
+        shoeList = DAO.getShoeList();
+        customerListPost = repository.getCustomerList();
 
         int shoeId = 0;
         Scanner scanner = new Scanner(System.in);
@@ -29,27 +49,16 @@ public class Main {
 
         if (choice.equalsIgnoreCase("J")) {
             AdminLogin al = new AdminLogin();
+
         } else if (choice.equalsIgnoreCase("N")) {
             UserLogin ul = new UserLogin();
             customerListPost = ul.login(customerList);
             shoeId = ul.addToCart(shoeList);
             repository.addToCart(shoeId, customerListPost);
+
         } else {
             System.out.println("Ogiltigt val");
         }
-
-//        reportTaskHandler.printCustomerOrderCount();
-//        reportTaskHandler.printCustomerPaidTotal();
-//        reportTaskHandler.printOrderValueByLocation();
-
-//        UserLogin ul = new UserLogin();
-//        customerListPost = ul.login(customerList);
-//        shoeId = ul.addToCart(shoeList);
-//        repository.addToCart(shoeId, customerListPost);
-    }
-
-    public static void main(String[] args) throws IOException {
-        new Main();
 
     }
 }
