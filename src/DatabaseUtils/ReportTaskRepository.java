@@ -14,7 +14,7 @@ public class ReportTaskRepository {
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT Customer.CustomerID, `Order`.OrderID FROM Customer" +
                      " JOIN OrdersPlacedBy ON Customer.CustomerID = OrdersPlacedBy.OrdersPlacedBy_Customer_ID" +
-                     " JOIN `Order` ON `Order`.OrderID = OrdersPlacedBy.OrdersPlacedBy_Order_ID");) {
+                     " JOIN `Order` ON `Order`.OrderID = OrdersPlacedBy.OrdersPlacedBy_Order_ID")) {
 
             while (resultSet.next()) {
                 int customerID = resultSet.getInt("CustomerID");
@@ -50,7 +50,7 @@ public class ReportTaskRepository {
                      "JOIN `Order` ON OrdersPlacedBy.OrdersPlacedBy_Order_ID = `Order`.OrderID " +
                      "JOIN OrderDetails ON `Order`.OrderID = OrderDetails.OrderDetails_Order_ID " +
                      "JOIN Shoe ON OrderDetails.OrderDetails_Shoe_ID = Shoe.ShoeID");
-             ResultSet resultSet = statement.executeQuery();) {
+             ResultSet resultSet = statement.executeQuery()) {
 
             // Map to store the total amount ordered by each customer
             Map<String, Integer> customerOrders = new HashMap<>();
@@ -82,13 +82,13 @@ public class ReportTaskRepository {
     public void printOrderValueByLocation() {
         try (Connection connection = ConnectionHandler.getConnection();
              Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT o.OrderID, o.OrderDate, l.Name, c.FirstName, c.LastName, od.Quantity, s.Price " +
-                     "FROM `Order` o " +
-                     "JOIN Location l ON o.Order_Location_ID = l.LocationID " +
-                     "JOIN OrdersPlacedBy opb ON opb.OrdersPlacedBy_Order_ID = o.OrderID " +
-                     "JOIN Customer c ON opb.OrdersPlacedBy_Customer_ID = c.CustomerID " +
-                     "JOIN OrderDetails od ON od.OrderDetails_Order_ID = o.OrderID " +
-                     "JOIN Shoe s ON od.OrderDetails_Shoe_ID = s.ShoeID")) {
+             ResultSet resultSet = statement.executeQuery("SELECT `Order`.OrderID, `Order`.OrderDate, Location.Name, Customer.FirstName, Customer.LastName, OrderDetails.Quantity, Shoe.Price " +
+                     "FROM `Order` " +
+                     "JOIN Location ON `Order`.Order_Location_ID = Location.LocationID " +
+                     "JOIN OrdersPlacedBy ON OrdersPlacedBy.OrdersPlacedBy_Order_ID = `Order`.OrderID " +
+                     "JOIN Customer ON OrdersPlacedBy.OrdersPlacedBy_Customer_ID = Customer.CustomerID " +
+                     "JOIN OrderDetails ON OrderDetails.OrderDetails_Order_ID = `Order`.OrderID " +
+                     "JOIN Shoe ON OrderDetails.OrderDetails_Shoe_ID = Shoe.ShoeID")) {
 
             Map<String, Double> orderValueByLocation = new HashMap<>();
             while (resultSet.next()) {
