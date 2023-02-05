@@ -1,18 +1,15 @@
+package Login;
+
 import Customer.Customer;
 import Shoe.Shoe;
-
-import javax.xml.crypto.Data;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 public class UserLogin {
 
-    Scanner scanner = new Scanner(System.in);    //skannern kan användas i hela UserLogin.
-    DataAccessObject DAO = new DataAccessObject();
-
+    Scanner scanner = new Scanner(System.in);    //skannern kan användas i hela Login.UserLogin.
 
     public List<Customer> login(List<Customer> customerList) {
 
@@ -20,9 +17,9 @@ public class UserLogin {
         Customer customer = null;
 
         while (customer == null) {
-            System.out.print("Enter first name: ");
+            System.out.print("Skriv in förnamn: ");
             String firstName = scanner.nextLine();
-            System.out.print("Enter password: ");
+            System.out.print("Skriv in lösenord: ");
             String password = scanner.nextLine();
 
             // Använder lambda för att se om det finns en användare som matchar angivet namn&pw. Ignores case on 'firstname' aka username.
@@ -31,25 +28,25 @@ public class UserLogin {
             if (customer != null) {
                 System.out.println("Välkommen " + firstName + "!");
                 customer.setIsLoggedIn(true); //flaggar kunden som inloggad. Då endast en kan logga in behöver vi inte ha koll på något ID just nu.
-                System.out.println(customer.getFirstName() + " Loggedin=" + customer.isLoggedIn());
-                //start addtocart-method...
+                System.out.println(customer.getFirstName() + " Loggedin = " + customer.isLoggedIn());
+                //start addtocart
+
             } else {
                 System.out.println("Invalid input");
             }
         }
-
         return customerList;
     }
 
 
     public int addToCart(List<Shoe> shoeList) {
 
-
         System.out.println();
         System.out.println("Skriv in modellnamnet på skon du vill köpa");
         System.out.println();
 
         Set<String> Modeltypes = new HashSet<>();
+
         for (Shoe shoe : shoeList) {
             Modeltypes.add(shoe.getModel().getModelName());
         }
@@ -63,7 +60,6 @@ public class UserLogin {
                     .getBrandName();
             System.out.println(String.format("%-15s %-15s", modelName, brandName));
         }
-
 
         String userInputOfShoeModel;
         Shoe matchingShoe = null;
@@ -82,7 +78,7 @@ public class UserLogin {
                 System.out.println("Hittade ingen skomodell med namn " + userInputOfShoeModel);
             }
         }
-        //Ser till att matchingshoe blir sparas i en final.
+        //Ser till att matchingShoe blir sparad i en final.
 
         final Shoe finalMatchingShoe=matchingShoe;
 
@@ -140,16 +136,14 @@ public class UserLogin {
 
         final String finalShoeColor=userInputOfColor;
 
-        int finalShoeId = shoeList.stream()
+        //System.out.println("Interna skoID:"+finalShoeId);
+        return shoeList.stream()
                 .filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(finalMatchingShoe.getModel().getModelName()))
                 .filter(shoe -> shoe.getShoeSize() == finalShoeSize)
                 .filter(shoe -> shoe.getShoeColor().equalsIgnoreCase(finalShoeColor))
                 .findFirst()
                 .get()
                 .getShoeID();
-
-        //System.out.println("Interna skoID:"+finalShoeId);
-        return finalShoeId;
     }
 
     }

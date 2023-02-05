@@ -21,8 +21,7 @@ public class Repository {
 
     public List<Shoe> getShoeList() throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT shoe.ShoeID, shoe.Inventory, shoe.Color, shoe.Size, shoe.Price, shoe.Sales, brand.BrandID, brand.BrandName, model.ModelID, model.ModelName\n" +
                         "FROM shoe\n" +
@@ -67,8 +66,7 @@ public class Repository {
 
     public List<Brand> getBrandList() throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT BrandID, BrandName FROM brand");) {
 
@@ -95,8 +93,7 @@ public class Repository {
 
     public List<Model> getModelList() throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT ModelID, ModelName FROM model");) {
 
@@ -123,8 +120,7 @@ public class Repository {
 
     public List<Customer> getCustomerList() throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT Customer.CustomerID, Customer.FirstName, Customer.LastName, Customer.Passwordd, Location.LocationID, Location.Name FROM Customer\n" +
                         "JOIN Location ON Customer.Customer_Location_ID = Location.LocationID");) {
@@ -159,8 +155,7 @@ public class Repository {
 
 
     public List<Order> getOrdersForCustomer(int customerId) throws IOException {
-        try (
-                Connection connection = ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 PreparedStatement statement = connection.prepareStatement(
                         "SELECT Order.OrderID, Order.OrderDate, Order.Order_Location_ID,Location.Name, OrderDetails.OrderDetails_Order_ID, OrderDetails.OrderDetails_Shoe_ID, OrderDetails.Quantity " +
                                 "FROM `Order` " +
@@ -209,8 +204,7 @@ public class Repository {
 
     public List<Order> getOrderList() throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT OrderID, OrderDate, Order_Location_ID, LocationID, Name FROM `Order` JOIN Location ON Order.Order_Location_ID = Location.LocationID");
         ) {
@@ -242,8 +236,7 @@ public class Repository {
 
     public List<OrderDetails> getOrderDetailsList() throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT Quantity, Orderdetails_Shoe_ID, Orderdetails_Order_ID FROM OrderDetails");) {
 
@@ -272,8 +265,7 @@ public class Repository {
 
     public void addToCart(int shoeID, List<Customer> customerList) throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection();) {
+        try (Connection connection = ConnectionHandler.getConnection();) {
 
 
             String callStoredProcedure = "{ call AddToCart(?,?,?) }";
@@ -318,7 +310,6 @@ public class Repository {
                 .map(Customer::getCustomerID)
                 .orElse(0);
     }
-
 }
 
 
