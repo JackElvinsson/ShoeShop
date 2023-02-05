@@ -1,6 +1,6 @@
 package DatabaseUtils;
 
-import Customer.Customer;
+import Customer.*;
 import Order.Order;
 import Shoe.Shoe;
 import Order.OrderDetails;
@@ -9,8 +9,11 @@ import Shoe.Model;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 
@@ -18,8 +21,7 @@ public class Repository {
 
     public List<Shoe> getShoeList() throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT shoe.ShoeID, shoe.Inventory, shoe.Color, shoe.Size, shoe.Price, shoe.Sales, brand.BrandID, brand.BrandName, model.ModelID, model.ModelName\n" +
                         "FROM shoe\n" +
@@ -64,8 +66,7 @@ public class Repository {
 
     public List<Brand> getBrandList() throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT BrandID, BrandName FROM brand");) {
 
@@ -92,8 +93,7 @@ public class Repository {
 
     public List<Model> getModelList() throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT ModelID, ModelName FROM model");) {
 
@@ -120,10 +120,10 @@ public class Repository {
 
     public List<Customer> getCustomerList() throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT CustomerID, FirstName, LastName, Passwordd, Customer_Location_ID FROM Customer");) {
+                ResultSet resultSet = statement.executeQuery("SELECT Customer.CustomerID, Customer.FirstName, Customer.LastName, Customer.Passwordd, Location.LocationID, Location.Name FROM Customer\n" +
+                        "JOIN Location ON Customer.Customer_Location_ID = Location.LocationID");) {
 
             List<Customer> customerList = new ArrayList<>();
 
@@ -139,9 +139,10 @@ public class Repository {
                 tempCustomer.setLastName(lastName);
                 String password = resultSet.getString("Passwordd");
                 tempCustomer.setPassword(password);
-                int customer_locationID = resultSet.getInt("Customer_Location_ID");
-                tempCustomer.setCustomer_locationID(customer_locationID);
-
+                int locationID = resultSet.getInt("LocationID");
+                String locationName = resultSet.getString("Name");
+                tempCustomer.setLocation(new Location(locationID, locationName));
+                tempCustomer.setOrderList(getOrdersForCustomer(customerID)); //hämtar orderlista för kunden.
                 customerList.add(tempCustomer);
 
             }
@@ -152,12 +153,61 @@ public class Repository {
         }
     }
 
+
+    public List<Order> getOrdersForCustomer(int customerId) throws IOException {
+        try (Connection connection = ConnectionHandler.getConnection();
+                PreparedStatement statement = connection.prepareStatement(
+                        "SELECT Order.OrderID, Order.OrderDate, Order.Order_Location_ID,Location.Name, OrderDetails.OrderDetails_Order_ID, OrderDetails.OrderDetails_Shoe_ID, OrderDetails.Quantity " +
+                                "FROM `Order` " +
+                                "JOIN OrderDetails ON Order.OrderID = OrderDetails.OrderDetails_Order_ID " +
+                                "JOIN OrdersPlacedBy ON Order.OrderID = OrdersPlacedBy.OrdersPlacedBy_Order_ID " +
+                                "JOIN Location ON Order.Order_Location_ID = LocationID " +
+                                "WHERE OrdersPlacedBy.OrdersPlacedBy_Customer_ID = ?"
+
+                );
+        ) {
+            statement.setInt(1, customerId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            List<Order> orderList = new ArrayList<>();
+            Map<Integer, Order> orderMap = new HashMap<>();
+
+            while (resultSet.next()) {
+                int orderId = resultSet.getInt("OrderID");
+                Order tempOrder = orderMap.get(orderId);
+                if (tempOrder == null) {
+                    tempOrder = new Order();
+                    tempOrder.setOrderID(orderId);
+                    LocalDate date = resultSet.getDate("OrderDate").toLocalDate();
+                    tempOrder.setOrderDate(date);
+                    String locationName = resultSet.getString("Name");
+                    int locationID = resultSet.getInt("Order_Location_ID");
+                    tempOrder.setOrder_locationID(new Location(locationID, locationName));
+                    tempOrder.setOrderDetailsList(new ArrayList<>());
+                    orderMap.put(orderId, tempOrder);
+                    orderList.add(tempOrder);
+                }
+                int orderDetails_Shoe_ID = resultSet.getInt("OrderDetails_Shoe_ID");
+                int quantity = resultSet.getInt("Quantity");
+
+                tempOrder.getOrderDetailsList().add(new OrderDetails(quantity, orderDetails_Shoe_ID, orderId));
+            }
+
+            return orderList;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     public List<Order> getOrderList() throws IOException {
 
-        try (
-                Connection connection =ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT OrderID, OrderDate, Order_Location_ID FROM `Order`");) {
+                ResultSet resultSet = statement.executeQuery("SELECT OrderID, OrderDate, Order_Location_ID, LocationID, Name FROM `Order` JOIN Location ON Order.Order_Location_ID = Location.LocationID");
+        ) {
 
             List<Order> orderList = new ArrayList<>();
 
@@ -167,14 +217,16 @@ public class Repository {
 
                 int orderID = resultSet.getInt("OrderID");
                 tempOrder.setOrderID(orderID);
-                String orderDate = resultSet.getString("OrderDate");
+                LocalDate orderDate = resultSet.getDate("OrderDate").toLocalDate();
                 tempOrder.setOrderDate(orderDate);
-                int order_locationID = resultSet.getInt("Order_Location_ID");
-                tempOrder.setOrder_locationID(order_locationID);
+                int locationID = resultSet.getInt("LocationID");
+                String name = resultSet.getString("Name");
+                tempOrder.setOrder_locationID(new Location(locationID, name));
 
                 orderList.add(tempOrder);
 
             }
+
             return orderList;
 
         } catch (SQLException e) {
@@ -184,8 +236,7 @@ public class Repository {
 
     public List<OrderDetails> getOrderDetailsList() throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection();
+        try (Connection connection = ConnectionHandler.getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT Quantity, Orderdetails_Shoe_ID, Orderdetails_Order_ID FROM OrderDetails");) {
 
@@ -214,9 +265,7 @@ public class Repository {
 
     public void addToCart(int shoeID, List<Customer> customerList) throws IOException {
 
-        try (
-                Connection connection = ConnectionHandler.getConnection(); ){
-
+        try (Connection connection = ConnectionHandler.getConnection();) {
 
 
             String callStoredProcedure = "{ call AddToCart(?,?,?) }";
@@ -261,7 +310,6 @@ public class Repository {
                 .map(Customer::getCustomerID)
                 .orElse(0);
     }
-
 }
 
 
