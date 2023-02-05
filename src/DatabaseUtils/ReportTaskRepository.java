@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReportTaskHandler {
+public class ReportTaskRepository {
 
     public void printCustomerOrderCount() {
 

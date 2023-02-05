@@ -1,6 +1,6 @@
 package Login;
 
-import DatabaseUtils.ReportTaskHandler;
+import DatabaseUtils.ReportTaskRepository;
 
 import java.util.Scanner;
 
@@ -8,7 +8,7 @@ public class AdminLogin {
 
     public AdminLogin () {
 
-        ReportTaskHandler reportTaskHandler = new ReportTaskHandler();
+        ReportTaskRepository reportTaskHandler = new ReportTaskRepository();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -28,7 +28,7 @@ public class AdminLogin {
         }
     }
 
-    private void printReport(ReportTaskHandler reportTaskHandler) {
+    private void printReport(ReportTaskRepository reportTaskHandler) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Vilken rapport vill du skriva ut?");
         System.out.println("1. Kundorderantal");

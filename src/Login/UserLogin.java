@@ -13,7 +13,6 @@ public class UserLogin {
 
     public List<Customer> login(List<Customer> customerList) {
 
-
         Customer customer = null;
 
         while (customer == null) {
