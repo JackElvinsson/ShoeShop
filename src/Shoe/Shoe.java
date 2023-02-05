@@ -11,12 +11,6 @@ public class Shoe {
     private Brand brand;
     private Model model;
 
-    //FK
-//    private int shoe_brandID;
-//    private int shoe_modelID;
-
-
-    //empty constructor
     public Shoe() {
     }
 
@@ -27,8 +21,6 @@ public class Shoe {
         this.shoeSize = shoeSize;
         this.shoePrice = shoePrice;
         this.shoeSales = shoeSales;
-//        this.shoe_brandID = shoe_brandID;
-//        this.shoe_modelID = shoe_modelID;
     }
 
 

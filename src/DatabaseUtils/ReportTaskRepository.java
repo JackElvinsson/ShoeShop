@@ -8,6 +8,7 @@ public class ReportTaskRepository {
 
     public void printCustomerOrderCount() {
 
+        // En map som lagrar kundens ID och antal ordrar
         Map<Integer, Integer> customerOrderCount = new HashMap<>();
 
         // Koppla upp mot databasen
@@ -30,9 +31,10 @@ public class ReportTaskRepository {
                 }
             }
 
-            // En for-loop som itererar över alla poster i mapen customerOrderCount och skriver ut rapporten
+            // En for-loop som itererar över alla poster i mapen customerOrderCount
             // Eftersom vi hittils bara har kundens ID så hämtas för varje post i mapen kundens namn från databasen och skrivs ut tillsammans med kundens orderantal
-            // För att hämta kundens namn från databasen används ett nytt statement och ett nytt resultset
+            // För att hämta kundens namn från databasen används alltså ett nytt statement och ett nytt resultset
+
             // customerOrderCount.entrySet() returnerar en collection av alla poster i mapen
             for (Map.Entry<Integer, Integer> entry : customerOrderCount.entrySet()) {
 
