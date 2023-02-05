@@ -13,10 +13,10 @@ public class ReportTaskRepository {
         // Koppla upp mot databasen
 
         try (Connection connection = ConnectionHandler.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT Customer.CustomerID, `Order`.OrderID FROM Customer" +
+             PreparedStatement countStatement = connection.prepareStatement("SELECT Customer.CustomerID, `Order`.OrderID FROM Customer" +
                      " JOIN OrdersPlacedBy ON Customer.CustomerID = OrdersPlacedBy.OrdersPlacedBy_Customer_ID" +
-                     " JOIN `Order` ON `Order`.OrderID = OrdersPlacedBy.OrdersPlacedBy_Order_ID")) {
+                     " JOIN `Order` ON `Order`.OrderID = OrdersPlacedBy.OrdersPlacedBy_Order_ID");
+             ResultSet resultSet = countStatement.executeQuery()) {
 
             // Iterera över alla rader i resultsetet och lägg till kundens orderantal i mapen customerOrderCount om kunden redan finns där, annars skapa en ny post
             // customerOrderCount.containsKey(customerID) returnerar true om customerOrderCount innehåller en post med nyckeln customerID
@@ -31,15 +31,22 @@ public class ReportTaskRepository {
             }
 
             // En for-loop som itererar över alla poster i mapen customerOrderCount och skriver ut rapporten
-            // För varje post i mapen hämtas kundens namn från databasen och skrivs ut tillsammans med kundens orderantal
-            // För att hämta kundens namn från databasen används en ny statement och en ny resultset
+            // Eftersom vi hittils bara har kundens ID så hämtas för varje post i mapen kundens namn från databasen och skrivs ut tillsammans med kundens orderantal
+            // För att hämta kundens namn från databasen används ett nytt statement och ett nytt resultset
             // customerOrderCount.entrySet() returnerar en collection av alla poster i mapen
             for (Map.Entry<Integer, Integer> entry : customerOrderCount.entrySet()) {
 
+                // för varje post i mapen hämtas kundens ID och orderantal
                 int customerID = entry.getKey();
                 int orderCount = entry.getValue();
 
-                ResultSet customerResultSet = statement.executeQuery("SELECT FirstName, LastName FROM Customer WHERE CustomerID = " + customerID);
+                // Skapa ett nytt statement och resultset för att hämta kundens namn
+                // PreparedStatement används igen för att undvika SQL-injections
+                // PreparedStatement är en subklass till Statement och har en metod setInt() som gör att vi kan ange vilket värde som ska ersätta frågetecknet i SQL-satsen
+                PreparedStatement customerStatement = connection.prepareStatement("SELECT FirstName, LastName FROM Customer WHERE CustomerID = ?");
+                customerStatement.setInt(1, customerID);
+                // Eftersom vi inte har några parametrar i SQL-satsen kan vi använda executeQuery() direkt
+                ResultSet customerResultSet = customerStatement.executeQuery();
 
                 // Eftersom vi vet att det bara kommer finnas en rad i resultsetet kan vi använda next() för att gå till den första raden
                 customerResultSet.next();
@@ -47,10 +54,9 @@ public class ReportTaskRepository {
                 String lastName = customerResultSet.getString("LastName");
                 System.out.println(firstName + " " + lastName + " har lagt " + orderCount + " ordrar.");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            System.out.println("Klar med rapporten.");
+            System.out.println();
+        } catch (SQLException e) {
+            throw new RuntimeException();
         }
     }
 
@@ -77,6 +83,7 @@ public class ReportTaskRepository {
                 int price = resultSet.getInt("Price");
                 int total = price * quantity;
 
+                // Om kunden redan finns i mapen lägg till ordervärdet till det totala ordervärdet, annars skapa en ny post
                 if (customerOrders.containsKey(customerName)) {
                     customerOrders.put(customerName, customerOrders.get(customerName) + total);
                 } else {
@@ -89,6 +96,7 @@ public class ReportTaskRepository {
             for (Map.Entry<String, Integer> entry : customerOrders.entrySet()) {
                 System.out.println(entry.getKey() + "\t" + entry.getValue());
             }
+            System.out.println();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -98,14 +106,14 @@ public class ReportTaskRepository {
 
         // Koppla upp mot databasen
         try (Connection connection = ConnectionHandler.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT `Order`.OrderID, `Order`.OrderDate, Location.Name, Customer.FirstName, Customer.LastName, OrderDetails.Quantity, Shoe.Price " +
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT `Order`.OrderID, `Order`.OrderDate, Location.Name, Customer.FirstName, Customer.LastName, OrderDetails.Quantity, Shoe.Price " +
                      "FROM `Order` " +
                      "JOIN Location ON `Order`.Order_Location_ID = Location.LocationID " +
                      "JOIN OrdersPlacedBy ON OrdersPlacedBy.OrdersPlacedBy_Order_ID = `Order`.OrderID " +
                      "JOIN Customer ON OrdersPlacedBy.OrdersPlacedBy_Customer_ID = Customer.CustomerID " +
                      "JOIN OrderDetails ON OrderDetails.OrderDetails_Order_ID = `Order`.OrderID " +
-                     "JOIN Shoe ON OrderDetails.OrderDetails_Shoe_ID = Shoe.ShoeID")) {
+                     "JOIN Shoe ON OrderDetails.OrderDetails_Shoe_ID = Shoe.ShoeID");
+             ResultSet resultSet = preparedStatement.executeQuery()) {
 
             // En map som lagrar ordervärdet för varje ort
             Map<String, Double> orderValueByLocation = new HashMap<>();
@@ -117,6 +125,8 @@ public class ReportTaskRepository {
             while (resultSet.next()) {
                 String locationName = resultSet.getString("Name");
                 double orderValue = resultSet.getInt("Quantity") * resultSet.getDouble("Price");
+
+                // Om orten redan finns i mapen lägg till ordervärdet till det totala ordervärdet, annars skapa en ny post
                 if (orderValueByLocation.containsKey(locationName)) {
                     orderValueByLocation.put(locationName, orderValueByLocation.get(locationName) + orderValue);
                 } else {
@@ -124,13 +134,15 @@ public class ReportTaskRepository {
                 }
             }
 
+            // Skriv ut rapporten
             System.out.println("Ordervärde enligt plats");
             System.out.println("Ortnamn\tOrdervärde");
             for (Map.Entry<String, Double> entry : orderValueByLocation.entrySet()) {
-                System.out.printf("%s\t\t%.2f\n", entry.getKey(), entry.getValue());
+                System.out.println(entry.getKey() + "\t" + entry.getValue());
             }
+            System.out.println();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 }
