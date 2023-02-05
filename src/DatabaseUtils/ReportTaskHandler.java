@@ -1,8 +1,5 @@
 package DatabaseUtils;
 
-import DatabaseUtils.ConnectionHandler;
-
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,17 +53,17 @@ public class ReportTaskHandler {
              ResultSet resultSet = statement.executeQuery();) {
 
             // Map to store the total amount ordered by each customer
-            Map<String, BigDecimal> customerOrders = new HashMap<>();
+            Map<String, Integer> customerOrders = new HashMap<>();
 
             // Iterate through the result set and calculate the total amount ordered by each customer
             while (resultSet.next()) {
                 String customerName = resultSet.getString("FirstName") + " " + resultSet.getString("LastName");
                 int quantity = resultSet.getInt("Quantity");
-                BigDecimal price = resultSet.getBigDecimal("Price");
-                BigDecimal total = price.multiply(BigDecimal.valueOf(quantity));
+                int price = resultSet.getInt("Price");
+                int total = price * quantity;
 
                 if (customerOrders.containsKey(customerName)) {
-                    customerOrders.put(customerName, customerOrders.get(customerName).add(total));
+                    customerOrders.put(customerName, customerOrders.get(customerName) + total);
                 } else {
                     customerOrders.put(customerName, total);
                 }
@@ -74,7 +71,7 @@ public class ReportTaskHandler {
 
             // Print the report
             System.out.println("Kundnamn\tTotalt ordervärde");
-            for (Map.Entry<String, BigDecimal> entry : customerOrders.entrySet()) {
+            for (Map.Entry<String, Integer> entry : customerOrders.entrySet()) {
                 System.out.println(entry.getKey() + "\t" + entry.getValue());
             }
         } catch (SQLException e) {
