@@ -19,248 +19,171 @@ import java.util.function.Function;
 
 public class Repository {
 
+    // Dessa metoder hämtar en lista med objekt från databasen
+    // De tar emot en query-sträng och en funktion(getList) som tar emot ett ResultSet och som i sin tur returnerar ett objekt
+    // De returnerar till sist en lista med objekt
     public List<Shoe> getShoeList() throws IOException {
 
-        try (Connection connection = ConnectionHandler.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT shoe.ShoeID, shoe.Inventory, shoe.Color, shoe.Size, shoe.Price, shoe.Sales, brand.BrandID, brand.BrandName, model.ModelID, model.ModelName\n" +
-                        "FROM shoe\n" +
-                        "JOIN brand ON shoe.Shoe_Brand_ID = brand.BrandID\n" +
-                        "JOIN model ON shoe.Shoe_Model_ID = model.ModelID;");) {
+        String query = "SELECT shoe.ShoeID, shoe.Inventory, shoe.Color, shoe.Size, shoe.Price, shoe.Sales, brand.BrandID, brand.BrandName, model.ModelID, model.ModelName" +
+                "FROM shoe" +
+                "JOIN brand ON shoe.Shoe_Brand_ID = brand.BrandID" +
+                "JOIN model ON shoe.Shoe_Model_ID = model.ModelID;";
 
-            List<Shoe> shoeList = new ArrayList<>();
+        return getList(query, resultSet -> {
 
-            while (resultSet.next()) {
+            Shoe tempShoe = new Shoe();
 
-                Shoe tempShoe = new Shoe();
+            try {
 
-                int shoeID = resultSet.getInt("ShoeID");
-                tempShoe.setShoeID(shoeID);
-                int inventory = resultSet.getInt("Inventory");
-                tempShoe.setInventory(inventory);
-                String color = resultSet.getString("Color");
-                tempShoe.setShoeColor(color);
-                int size = resultSet.getInt("Size");
-                tempShoe.setShoeSize(size);
-                double price = resultSet.getDouble("Price");
-                tempShoe.setShoePrice(price);
-                int sales = resultSet.getInt("Sales");
-                tempShoe.setShoeSales(sales);
-                int brandID = resultSet.getInt("BrandID");
-                String brandName = resultSet.getString("BrandName");
-                tempShoe.setBrand(new Brand(brandID, brandName));
-                int modelID = resultSet.getInt("ModelID");
-                String modelName = resultSet.getString("ModelName");
-                tempShoe.setModel(new Model(modelID, modelName));
+                tempShoe.setShoeID(resultSet.getInt("ShoeID"));
+                tempShoe.setInventory(resultSet.getInt("Inventory"));
+                tempShoe.setShoeColor(resultSet.getString("Color"));
+                tempShoe.setShoeSize(resultSet.getInt("Size"));
+                tempShoe.setShoePrice(resultSet.getDouble("Price"));
+                tempShoe.setShoeSales(resultSet.getInt("Sales"));
+                tempShoe.setBrand(new Brand(resultSet.getInt("BrandID"), resultSet.getString("BrandName")));
+                tempShoe.setModel(new Model(resultSet.getInt("ModelID"), resultSet.getString("ModelName")));
 
-                shoeList.add(tempShoe);
-
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            return shoeList;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+            return tempShoe;
+        });
     }
-
 
     public List<Brand> getBrandList() throws IOException {
 
-        try (Connection connection = ConnectionHandler.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT BrandID, BrandName FROM brand");) {
+        String query = "SELECT BrandID, BrandName FROM brand";
 
-            List<Brand> brandList = new ArrayList<>();
+        return getList(query, resultSet -> {
 
-            while (resultSet.next()) {
+            Brand tempBrand = new Brand();
 
-                Brand tempBrand = new Brand();
+            try {
 
-                int brandID = resultSet.getInt("BrandID");
-                tempBrand.setBrandID(brandID);
-                String brandName = resultSet.getString("BrandName");
-                tempBrand.setBrandName(brandName);
+                tempBrand.setBrandID(resultSet.getInt("BrandID"));
+                tempBrand.setBrandName(resultSet.getString("BrandName"));
 
-                brandList.add(tempBrand);
-
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            return brandList;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+            return tempBrand;
+        });
     }
 
     public List<Model> getModelList() throws IOException {
 
-        try (Connection connection = ConnectionHandler.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT ModelID, ModelName FROM model");) {
+        String query = "SELECT model.ModelID, model.ModelName FROM model";
 
-            List<Model> modelList = new ArrayList<>();
+        return getList(query, resultSet -> {
 
-            while (resultSet.next()) {
+            Model tempModel = new Model();
 
-                Model tempModel = new Model();
+            try {
 
-                int modelID = resultSet.getInt("ModelID");
-                tempModel.setModelID(modelID);
-                String modelName = resultSet.getString("ModelName");
-                tempModel.setModelName(modelName);
+                tempModel.setModelID(resultSet.getInt("ModelID"));
+                tempModel.setModelName(resultSet.getString("ModelName"));
 
-                modelList.add(tempModel);
-
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            return modelList;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+            return tempModel;
+        });
     }
 
     public List<Customer> getCustomerList() throws IOException {
 
-        try (Connection connection = ConnectionHandler.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT Customer.CustomerID, Customer.FirstName, Customer.LastName, Customer.Passwordd, Location.LocationID, Location.Name FROM Customer\n" +
-                        "JOIN Location ON Customer.Customer_Location_ID = Location.LocationID");) {
+        String query = "SELECT Customer.CustomerID, Customer.FirstName, Customer.LastName, Customer.Passwordd, Location.LocationID, Location.Name FROM Customer\n" +
+                "JOIN Location ON Customer.Customer_Location_ID = Location.LocationID";
 
-            List<Customer> customerList = new ArrayList<>();
+        return getList(query, resultSet -> {
 
-            while (resultSet.next()) {
+            Customer tempCustomer = new Customer();
 
-                Customer tempCustomer = new Customer();
+            try {
 
-                int customerID = resultSet.getInt("CustomerID");
-                tempCustomer.setCustomerID(customerID);
-                String firstName = resultSet.getString("FirstName");
-                tempCustomer.setFirstName(firstName);
-                String lastName = resultSet.getString("LastName");
-                tempCustomer.setLastName(lastName);
-                String password = resultSet.getString("Passwordd");
-                tempCustomer.setPassword(password);
-                int locationID = resultSet.getInt("LocationID");
-                String locationName = resultSet.getString("Name");
-                tempCustomer.setLocation(new Location(locationID, locationName));
-                tempCustomer.setOrderList(getOrdersForCustomer(customerID)); //hämtar orderlista för kunden.
-                customerList.add(tempCustomer);
+                tempCustomer.setCustomerID(resultSet.getInt("CustomerID"));
+                tempCustomer.setFirstName(resultSet.getString("FirstName"));
+                tempCustomer.setLastName(resultSet.getString("LastName"));
+                tempCustomer.setPassword(resultSet.getString("Passwordd"));
+                tempCustomer.setLocation(new Location(resultSet.getInt("LocationID"), resultSet.getString("Name")));
+                tempCustomer.setOrderList(getOrdersForCustomer(resultSet.getInt("CustomerID")));
 
+            } catch (SQLException | IOException e) {
+                e.printStackTrace();
             }
-            return customerList;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+            return tempCustomer;
+        });
     }
-
 
     public List<Order> getOrdersForCustomer(int customerId) throws IOException {
-        try (Connection connection = ConnectionHandler.getConnection();
-                PreparedStatement statement = connection.prepareStatement(
-                        "SELECT Order.OrderID, Order.OrderDate, Order.Order_Location_ID,Location.Name, OrderDetails.OrderDetails_Order_ID, OrderDetails.OrderDetails_Shoe_ID, OrderDetails.Quantity " +
-                                "FROM `Order` " +
-                                "JOIN OrderDetails ON Order.OrderID = OrderDetails.OrderDetails_Order_ID " +
-                                "JOIN OrdersPlacedBy ON Order.OrderID = OrdersPlacedBy.OrdersPlacedBy_Order_ID " +
-                                "JOIN Location ON Order.Order_Location_ID = LocationID " +
-                                "WHERE OrdersPlacedBy.OrdersPlacedBy_Customer_ID = ?"
+        String query = "SELECT Order.OrderID, Order.OrderDate, Order.Order_Location_ID,Location.Name, OrderDetails.OrderDetails_Order_ID, OrderDetails.OrderDetails_Shoe_ID, OrderDetails.Quantity " +
+                "FROM `Order` " +
+                "JOIN OrderDetails ON Order.OrderID = OrderDetails.OrderDetails_Order_ID " +
+                "JOIN OrdersPlacedBy ON Order.OrderID = OrdersPlacedBy.OrdersPlacedBy_Order_ID " +
+                "JOIN Location ON Order.Order_Location_ID = LocationID " +
+                "WHERE OrdersPlacedBy.OrdersPlacedBy_Customer_ID = " + customerId;
 
-                );
-        ) {
-            statement.setInt(1, customerId);
+        return getList(query, resultSet -> {
 
-            ResultSet resultSet = statement.executeQuery();
+            Order tempOrder = new Order();
 
-            List<Order> orderList = new ArrayList<>();
-            Map<Integer, Order> orderMap = new HashMap<>();
+            try {
 
-            while (resultSet.next()) {
-                int orderId = resultSet.getInt("OrderID");
-                Order tempOrder = orderMap.get(orderId);
-                if (tempOrder == null) {
-                    tempOrder = new Order();
-                    tempOrder.setOrderID(orderId);
-                    LocalDate date = resultSet.getDate("OrderDate").toLocalDate();
-                    tempOrder.setOrderDate(date);
-                    String locationName = resultSet.getString("Name");
-                    int locationID = resultSet.getInt("Order_Location_ID");
-                    tempOrder.setOrder_locationID(new Location(locationID, locationName));
-                    tempOrder.setOrderDetailsList(new ArrayList<>());
-                    orderMap.put(orderId, tempOrder);
-                    orderList.add(tempOrder);
-                }
-                int orderDetails_Shoe_ID = resultSet.getInt("OrderDetails_Shoe_ID");
-                int quantity = resultSet.getInt("Quantity");
+                tempOrder.setOrderID(resultSet.getInt("OrderID"));
+                tempOrder.setOrderDate(resultSet.getDate("OrderDate").toLocalDate());
+                tempOrder.setOrder_locationID(new Location(resultSet.getInt("Order_Location_ID"), resultSet.getString("Name")));
+                tempOrder.setOrderDetailsList(new ArrayList<>());
+                tempOrder.getOrderDetailsList().add(new OrderDetails(resultSet.getInt("Quantity"), resultSet.getInt("Order_Location_ID"), resultSet.getInt("OrderID")));
 
-                tempOrder.getOrderDetailsList().add(new OrderDetails(quantity, orderDetails_Shoe_ID, orderId));
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-
-            return orderList;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+            return tempOrder;
+        });
     }
 
+    public List<Order> getOrderList() {
 
-    public List<Order> getOrderList() throws IOException {
+        String query = "SELECT OrderID, OrderDate, Order_Location_ID, LocationID, Name FROM `Order` JOIN Location ON Order.Order_Location_ID = Location.LocationID";
 
-        try (Connection connection = ConnectionHandler.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT OrderID, OrderDate, Order_Location_ID, LocationID, Name FROM `Order` JOIN Location ON Order.Order_Location_ID = Location.LocationID");
-        ) {
+        return getList(query, resultSet -> {
 
-            List<Order> orderList = new ArrayList<>();
+                    Order tempOrder = new Order();
 
-            while (resultSet.next()) {
+                    try {
 
-                Order tempOrder = new Order();
+                        tempOrder.setOrderID(resultSet.getInt("OrderID"));
+                        tempOrder.setOrderDate(resultSet.getDate("OrderDate").toLocalDate());
+                        tempOrder.setOrder_locationID(new Location(resultSet.getInt("LocationID"), resultSet.getString("Name")));
 
-                int orderID = resultSet.getInt("OrderID");
-                tempOrder.setOrderID(orderID);
-                LocalDate orderDate = resultSet.getDate("OrderDate").toLocalDate();
-                tempOrder.setOrderDate(orderDate);
-                int locationID = resultSet.getInt("LocationID");
-                String name = resultSet.getString("Name");
-                tempOrder.setOrder_locationID(new Location(locationID, name));
-
-                orderList.add(tempOrder);
-
-            }
-
-            return orderList;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    return tempOrder;
+                }
+        );
     }
 
     public List<OrderDetails> getOrderDetailsList() throws IOException {
 
-        try (Connection connection = ConnectionHandler.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT Quantity, Orderdetails_Shoe_ID, Orderdetails_Order_ID FROM OrderDetails");) {
+        String query = "SELECT Quantity, Orderdetails_Shoe_ID, Orderdetails_Order_ID FROM OrderDetails";
 
-            List<OrderDetails> orderDetailsList = new ArrayList<>();
+        return getList(query, resultSet -> {
 
-            while (resultSet.next()) {
+            OrderDetails tempOrder = new OrderDetails();
 
-                OrderDetails tempOrder = new OrderDetails();
+            try {
 
-                int quantity = resultSet.getInt("Quantity");
-                tempOrder.setQuantity(quantity);
-                int orderdetails_shoeID = resultSet.getInt("Orderdetails_Shoe_ID");
-                tempOrder.setOrderdetails_shoeID(orderdetails_shoeID);
-                int orderdetails_orderID = resultSet.getInt("Orderdetails_Order_ID");
-                tempOrder.setOrderdetails_orderID(orderdetails_orderID);
+                tempOrder.setQuantity(resultSet.getInt("Quantity"));
+                tempOrder.setOrderdetails_shoeID(resultSet.getInt("Orderdetails_Shoe_ID"));
+                tempOrder.setOrderdetails_orderID(resultSet.getInt("Orderdetails_Order_ID"));
 
-                orderDetailsList.add(tempOrder);
-
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            return orderDetailsList;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+            return tempOrder;
+        });
     }
 
     public void addToCart(int shoeID, List<Customer> customerList) throws IOException {
@@ -284,7 +207,10 @@ public class Repository {
         }
     }
 
-    //TODO: Implementera denna metod
+
+    // Denna metod är en generisk metod som tar emot en query och en funktion som tar emot en ResultSet och returnerar en lista av objekt
+    // Den används för att hämta data från databasen och returnera en lista av objekt
+    // Den används i metoder som hämtar data från databasen
     private <T> List<T> getList(String query, Function<ResultSet, T> rowMapper) {
         try (
                 Connection connection = ConnectionHandler.getConnection();

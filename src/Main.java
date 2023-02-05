@@ -1,5 +1,5 @@
 import Customer.Customer;
-import DatabaseUtils.ReportTaskHandler;
+import DatabaseUtils.ReportTaskRepository;
 import DatabaseUtils.Repository;
 import Login.AdminLogin;
 import Login.UserLogin;
@@ -15,7 +15,7 @@ public class Main {
 
         Repository repository = new Repository();
         DataAccessObject DAO = new DataAccessObject();
-        ReportTaskHandler reportTaskHandler = new ReportTaskHandler();
+        ReportTaskRepository reportTaskHandler = new ReportTaskRepository();
 
         List<Customer> customerList = DAO.getCustomerList();
         List<Shoe> shoeList = DAO.getShoeList();
