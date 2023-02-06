@@ -31,7 +31,7 @@ public class ReportTaskRepository {
                 }
             }
 
-            // En for-loop som itererar över alla poster i mapen customerOrderCount
+            // Itererar över alla poster i mapen customerOrderCount
             // Eftersom vi hittils bara har kundens ID så hämtas för varje post i mapen kundens namn från databasen och skrivs ut tillsammans med kundens orderantal
             // För att hämta kundens namn från databasen används alltså ett nytt statement och ett nytt resultset
 

@@ -8,7 +8,7 @@ public class AdminLogin {
 
     public AdminLogin () {
 
-        ReportTaskRepository reportTaskHandler = new ReportTaskRepository();
+        ReportTaskRepository reportTaskRepository = new ReportTaskRepository();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -18,7 +18,7 @@ public class AdminLogin {
             System.out.println("2. Logga ut");
             int choice = scanner.nextInt();
             switch (choice) {
-                case 1 -> printReport(reportTaskHandler);
+                case 1 -> printReport(reportTaskRepository);
                 case 2 -> {
                     System.out.println("Du har loggat ut");
                     return;
