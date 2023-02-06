@@ -21,15 +21,13 @@ public class UserLogin {
             System.out.print("Skriv in lösenord: ");
             String password = scanner.nextLine();
 
-            // Använder lambda för att se om det finns en användare som matchar angivet namn&pw. Ignores case on 'firstname' aka username.
+            // Använder lambda för att se om det finns en användare som matchar angivet namn&pw.
             customer = customerList.stream().filter(c -> c.getFirstName().equalsIgnoreCase(firstName) && c.getPassword().equals(password)).findFirst().orElse(null);
 
             if (customer != null) {
                 System.out.println("Välkommen " + firstName + "!");
                 customer.setIsLoggedIn(true); //flaggar kunden som inloggad. Då endast en kan logga in behöver vi inte ha koll på något ID just nu.
                 System.out.println(customer.getFirstName() + " Loggedin = " + customer.isLoggedIn());
-                //start addtocart
-
             } else {
                 System.out.println("Invalid input");
             }
@@ -46,17 +44,15 @@ public class UserLogin {
 
         Set<String> Modeltypes = new HashSet<>();
 
+        //Spara modellnamn
         for (Shoe shoe : shoeList) {
             Modeltypes.add(shoe.getModel().getModelName());
         }
 
+
+        //Listar ut modellnamnen & märkesnamn
         for (String modelName : Modeltypes) {
-            String brandName = shoeList.stream()
-                    .filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(modelName))
-                    .findFirst()
-                    .get()
-                    .getBrand()
-                    .getBrandName();
+            String brandName = shoeList.stream().filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(modelName)).findFirst().get().getBrand().getBrandName();
             System.out.println(String.format("%-15s %-15s", modelName, brandName));
         }
 
@@ -80,12 +76,8 @@ public class UserLogin {
         //Ser till att matchingShoe blir sparad i en final.
 
         final Shoe finalMatchingShoe=matchingShoe;
-
-        Set<Integer> availableSizes = shoeList.stream()
-                .filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(finalMatchingShoe.getModel().getModelName()))
-                .filter(shoe -> shoe.getInventory() > 0)
-                .map(shoe -> shoe.getShoeSize())
-                .collect(Collectors.toSet());
+        // Kollar så modellnamnet är likedant som på finalMatchingShoe, och att inventory är större än 0. Listar därefter tillgängliga storlekarna.
+        Set<Integer> availableSizes = shoeList.stream().filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(finalMatchingShoe.getModel().getModelName())).filter(shoe -> shoe.getInventory() > 0).map(shoe -> shoe.getShoeSize()).collect(Collectors.toSet());
 
         System.out.println("Tillgängliga storlekar:");
         for (Integer size : availableSizes) {
@@ -102,18 +94,20 @@ public class UserLogin {
             System.out.println("Ogiltig storlek.");
         }
         final int finalShoeSize=UserInputOfShoeSize;
+
+
+
         System.out.println();
         System.out.println("Tillgängliga färger:");
-        Set<String> availableColors = shoeList.stream()
-                .filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(finalMatchingShoe.getModel().getModelName()))
-                .filter(shoe -> shoe.getInventory() > 0)
-                .filter(shoe -> shoe.getShoeSize() == finalShoeSize)
-                .map(shoe -> shoe.getShoeColor().toLowerCase())
-                .collect(Collectors.toSet());
+
+        //Kollar så modellnamnet är likedant som på finalMatchingShoe, at inventory är större än 0. Sen att skostorleken är lika med finalShoeSize. Visar därefter tillgängliga färger(vi har bara 1 färg per storlek dock, men ifall vi hade haft fler)
+        Set<String> availableColors = shoeList.stream().filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(finalMatchingShoe.getModel().getModelName())).filter(shoe -> shoe.getInventory() > 0).filter(shoe -> shoe.getShoeSize() == finalShoeSize).map(shoe -> shoe.getShoeColor().toLowerCase()).collect(Collectors.toSet());
 
         for (String color : availableColors) {
             System.out.println(color);
         }
+
+
 
         scanner.nextLine();
         String userInputOfColor;
@@ -135,14 +129,8 @@ public class UserLogin {
 
         final String finalShoeColor=userInputOfColor;
 
-        //System.out.println("Interna skoID:"+finalShoeId);
-        return shoeList.stream()
-                .filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(finalMatchingShoe.getModel().getModelName()))
-                .filter(shoe -> shoe.getShoeSize() == finalShoeSize)
-                .filter(shoe -> shoe.getShoeColor().equalsIgnoreCase(finalShoeColor))
-                .findFirst()
-                .get()
-                .getShoeID();
+        //Tar fram och retunerar shoeID för skon man valt via, finalMatchingShoe, finalShoeSize, finalShoeColor.
+        return shoeList.stream().filter(shoe -> shoe.getModel().getModelName().equalsIgnoreCase(finalMatchingShoe.getModel().getModelName())).filter(shoe -> shoe.getShoeSize() == finalShoeSize).filter(shoe -> shoe.getShoeColor().equalsIgnoreCase(finalShoeColor)).findFirst().get().getShoeID();
     }
 
     }
